@@ -1,0 +1,18 @@
+.item {
+	padding: .15rem .3rem;
+	margin-top: .1rem;
+	font-size: .18rem;
+}
+
+.item .title {
+	font-size: .25rem;
+	margin: .1rem 0;
+}
+
+.mui-pull-bottom-tips {
+	background-color: #efeff4 !important;
+}
+
+.item .desc {
+	color: #AAAAAA;
+}

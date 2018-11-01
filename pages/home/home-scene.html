@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/lib/pull-top-tips.css"/>
+		<link rel="stylesheet" type="text/css" href="css/home-scene.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">现场检测</h1>
+		</header>
+		<div class="mui-content">			
+			<div id="slider" class="mui-slider  mui-fullscreen">
+				<div class="search">
+					<div class="line base-flex-horizontal">
+						<input type="text" placeholder="请输入客户单位/委托单号" v-model="searchWords">						
+						<button class="mui-btn"  @tap="searchEvent()">搜索</button>					
+					</div>
+				</div>
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a v-for="(item,index) in swipeList" :class="['mui-control-item',activeIndex==index ? 'mui-active':'']" :href="['#'+item.linkhref]">
+						{{item.title}}
+					</a>
+				</div>
+				<div class="mui-slider-group">
+					<div v-for="(item,index) in swipeList" :id="[item.linkhref]" :class="['mui-slider-item mui-control-content',activeIndex==index? 'mui-active':'']">
+						<div class="mui-scroll-wrapper">
+							<div :id="item.id" class="mui-scroll">
+								<ul class="mui-table-view mui-clearfix">
+									<li class="mui-table-view-cell base-border-bottom" @tap="busItemClick()">
+										<div class="line base-flex-between">
+											<div class="base-flex-horizontal">
+												<div class="desc">客户单位:</div>
+												<div>浙江申永达设备安装有限公司</div>
+											</div>
+                                            <div class="status">已提交</div>
+										</div>
+										<div class="line base-flex-between">
+											<div class="base-flex-horizontal">
+												<div class="desc">委托单号:</div>
+												<div>412893967651</div>
+											</div>
+											<div class="base-flex-horizontal">
+												<div class="desc">检测编号:</div>
+												<div>1811109055</div>
+											</div>
+										</div>
+										<div class="line base-flex-between">
+											<div class="base-flex-horizontal">
+												<div class="desc">样品总称:</div>
+												<div>铜芯交联聚乙烯</div>
+											</div>
+											<div class="base-flex-horizontal">
+												<div class="desc">受理时间:</div>
+												<div>2018-10-29 10:28</div>
+											</div>
+										</div>
+									</li>									
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.pullToRefresh.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.pullToRefresh.material.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="utf-8">
+			webtool.backQuit();
+			mui.init();
+			var vm=new Vue({
+				el:"#slider",
+				data:{
+					activeIndex:0,
+					searchWords:"",
+					postInfo:{
+						page:1,//当前页面数
+						pageSize:10,//分页条数
+					},
+					swipeList:[
+						{ id:1,title:"全部",linkhref:"item1mobile1",datalist:[] },
+						{ id:2,title:"未提交",linkhref:"item2mobile",datalist:[] },
+						{ id:3,title:"已提交",linkhref:"item3mobile",datalist:[] },
+					],
+				},
+				methods:{
+					searchEvent:function(){
+						alert("搜索的关键字:  "+this.searchWords)
+					},
+					busItemClick:function(){
+						webtool.openWindow('home-scene-split');
+					}
+				}
+			})
+			vm.$nextTick(function(){
+				mui('.mui-scroll-wrapper').scroll();				
+				mui("#slider").slider();		
+			})
+			//上下拉初始事件
+			mui.each(document.querySelectorAll('.mui-scroll'),function(index,item){
+				mui(item).pullToRefresh({
+					up:{
+						callback:function(){
+							var pullObj=this;
+							pullObj.endPullUpToRefresh(true);
+						}
+					},
+					down:{
+						callback:function(){
+							var pullObj=this;
+							setTimeout(function(){	pullObj.endPullDownToRefresh(true);},500)						
+						}
+					}
+				})
+			})
+			//监听左右滑动事件
+			mui('.mui-slider')[0].addEventListener('slide',function(e){
+				let index=event.detail.slideNumber;
+					vm.activeIndex=index;
+				var pullRefreshView = mui('.mui-scroll')[index];				
+					mui(pullRefreshView).pullToRefresh().pullDownLoading();		          
+			})
+		
+
+		</script>
+	</body>
+
+</html>

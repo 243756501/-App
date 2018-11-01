@@ -1,0 +1,116 @@
+/*app公共样式*/
+
+/*标题栏主题*/
+.mui-bar-nav {
+	background-color: #FF8C00;
+}
+
+/*背景白色*/
+.base-bg-white {
+	background-color: #FFFFFF;
+}
+
+.mui-bar-nav .mui-title {
+	color: #FFFFFF;
+}
+
+.base-content {
+	margin-top: 44px;
+}
+
+/*标题右侧图标*/
+.mui-bar-nav .right {
+	width: .3rem;
+	position: absolute;
+	right: .3rem;
+	top: .2rem;
+}
+
+.mui-bar-nav .mui-btn {
+	background-color: #FF8C00;
+	color: #FFFFFF;
+	border: 1px solid #ffffff !important;
+	position: absolute;
+	right: .1rem;
+	padding: .08rem !important;
+}
+
+/*标题栏返回键*/
+.mui-bar-nav.mui-bar .mui-icon {
+	color: #FFFFFF;
+}
+
+/*上下拉插件样式*/
+.mui-pull-bottom-tips {
+	background-color: #EFEFF4 !important;
+}
+
+.mui-pull-loading {
+	font-size: .18rem;
+}
+
+/*placeholder字体颜色*/
+input::-webkit-input-placeholder {
+	color: #FFFFFF;
+	font-size: .18rem;
+}
+
+input::-moz-placeholder {
+	/* Mozilla Firefox 19+ */
+	color: #FFFFFF;
+	font-size: .18rem;
+
+}
+
+input:-moz-placeholder {
+	/* Mozilla Firefox 4 to 18 */
+	color: #FFFFFF;
+	font-size: .18rem;
+
+}
+
+input:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: #FFFFFF;
+	font-size: .18rem;
+
+}
+
+/*底部分割线*/
+.base-border-bottom {
+	border-bottom: 1px solid #EFEFF4;
+}
+
+/*去除底部分割线*/
+.base-clear-border {
+	border: 1px solid #FFFFFF !important;
+}
+
+/*flex布局(兼容android4.4及以上)*/
+
+/*水平排列垂直居中*/
+.base-flex-horizontal {
+	display: flex;
+	align-items: center;
+}
+
+/*水平居中垂直排列*/
+.base-flex-vertical {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+/*水平垂直居中*/
+.base-flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/*水平首尾垂直居中*/
+.base-flex-between {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}

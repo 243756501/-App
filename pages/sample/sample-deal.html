@@ -1,0 +1,231 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/lib/pull-top-tips.css" />
+		<link rel="stylesheet" type="text/css" href="../home/css/home-scene.css" />
+		<link rel="stylesheet" type="text/css" href="../home/css/home-reportseek.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/lib/mui.picker.min.css" />
+		<style>
+			.mui-fullscreen .mui-segmented-control~.mui-slider-group{
+				top:125px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">检样处理</h1>
+		</header>
+		<div id="app" class="mui-content">
+			<div class="popover" v-if="maskShow">
+				<div class="line base-flex-between">
+					<button>{{sqlWhere.dateType}}</button>
+					<div class="base-flex-horizontal">
+						<button>{{sqlWhere.dateStart}}</button>至<button>{{sqlWhere.dateEnd}}</button>
+					</div>
+				</div>
+				<div class="bottom base-flex-horizontal">
+					<div class="base-flex-center confirm" @tap="popoverConfirm()">确定</div>
+					<div class="base-flex-center" @tap="popoverCancel()">取消</div>
+				</div>
+			</div>
+			<div id="slider" class="mui-slider  mui-fullscreen">
+				<div class="search">
+					<div class="line base-flex-horizontal">
+						<input type="text" placeholder="请输入样品编号/检测编号" v-model="searchWords">
+						<button class="mui-btn" @tap="searchEvent()">搜索</button>
+					</div>
+					<div class="split base-flex-horizontal">
+						<div class="content">
+							<div :class='["select" ,maskShow==true ? "open":""]'>
+								<div @tap="searchPopEvent()">筛选</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a v-for="(item,index) in swipeList" :class="['mui-control-item',activeIndex==index ? 'mui-active':'']" :href="['#'+item.linkhref]">
+						{{item.title}}
+					</a>
+				</div>
+				<div class="mui-slider-group">
+					<div v-for="(item,index) in swipeList" :id="[item.linkhref]" :class="['mui-slider-item mui-control-content',activeIndex==index? 'mui-active':'']">
+						<div class="mui-scroll-wrapper">
+							<div :id="item.id" class="mui-scroll">
+								<ul class="mui-table-view mui-clearfix">
+									<li class="mui-table-view-cell base-border-bottom" @tap="reportItemClick()">
+										<div class="line base-flex-between">
+											<div>主检部门:</div>
+											<div class="desc">纺织产品检测部</div>
+										</div>
+										<div class="line base-flex-between">
+											<div>报告状态:<span class="desc">【待拟稿】</span></div>
+											<div>检测编号:<span class="desc">1813407923</span></div>
+										</div>
+										<div class="line base-flex-between">
+											<div>样品编号:<span class="desc">1811615227</span></div>
+											<div>样品名称:<span class="desc">原味香酥肉松</span></div>
+										</div>																			
+										<div class="line base-flex-between">
+											<div>样品数量:<span class="desc">11</span></div>
+											<div>退样数:<span class="desc">0</span></div>
+										</div>
+										<div class="line base-flex-between">
+											<div>消耗数量:<span class="desc">0</span></div>
+											<div>留样数量:<span class="desc">2</span></div>
+										</div>
+										<div class="line base-flex-between">
+											<div>样品处置:<span class="desc">代为处理</span></div>
+											<div>要求时间:<span class="desc">2018-11-02</span></div>
+										</div>
+										<div class="line base-flex-between">
+											<div>储存条件:<span class="desc">常温</span></div>
+											<div>主检专业:<span class="desc">纺织专业组2</span></div>
+										</div>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.pullToRefresh.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.pullToRefresh.material.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="utf-8">
+			mui.init();
+			var vm=new Vue({
+				el:"#app",
+				data:{
+					activeIndex:0,
+					searchWords:"",
+					postInfo:{
+						page:1,//当前页面数
+						pageSize:10,//分页条数
+					},
+					mask:null,
+					maskShow:false,
+					sqlWhere:{
+						dateType:"请选择",
+						reportStatus:"请选择",
+						feeStatus:"请选择",
+						dateStart:"请选择",
+						dateEnd:"请选择"
+					},
+					swipeList:[
+						{ id:1,title:"未处置",linkhref:"item1mobile",datalist:[] },
+						{ id:2,title:"已留样",linkhref:"item2mobile",datalist:[] },
+						{ id:3,title:"已处置",linkhref:"item3mobile",datalist:[] },
+					],
+				},
+				methods:{
+					//筛选取消
+					popoverCancel:function(){
+						this.maskShow=false;							
+						mui('.mui-backdrop')[0].style.display="none";				
+					},
+					//条件筛选
+					popoverConfirm:function(){				
+						this.maskShow=false;							
+						mui('.mui-backdrop')[0].style.display="none";
+					},
+					//报告状态选择
+					searchReportStatus:function(){
+						let picker=new mui.PopPicker();
+						picker.setData([
+							{text:"已打印",value:"1"},
+							{text:"待拟稿",value:"1"}
+						]);
+						picker.show((rs)=>{
+							this.sqlWhere.reportStatus=rs[0].text;
+							this.maskShow=true;
+							this.mask.show();
+						})
+					},
+					//搜索Popover
+					searchPopEvent:function(){
+						if(!this.maskShow){
+							if(!this.mask){
+								this.mask = mui.createMask(function(){
+									return false;
+								});
+							}
+							this.mask.show();
+						  this.maskShow=true;
+						}else{
+							this.maskShow=false;							
+							mui('.mui-backdrop')[0].style.display="none";
+						}
+						
+					},
+					addMailClick:function(){
+						webtool.openWindow('home-mailbag-add');
+					},
+					searchEvent:function(){
+						alert("搜索的关键字:  "+this.searchWords)
+					},
+					reportItemClick:function(){
+						plus.nativeUI.actionSheet({
+							title:"报告批准操作",
+							cancel:"取消",
+							buttons:[{ title:"入库" },{ title:"保存货架编号" },{ title:"撤销" }]
+						},function(e){
+							let index = e.index;
+							if(index=="1"){
+								console.log(1)
+							}else if(index=="2"){
+								console.log(2)
+							}
+						})
+					}
+				}
+			})
+			vm.$nextTick(function(){
+				mui('.mui-scroll-wrapper').scroll();				
+				mui("#slider").slider();		
+			})
+			//上下拉初始事件
+			mui.each(document.querySelectorAll('.mui-scroll'),function(index,item){
+				mui(item).pullToRefresh({
+					up:{
+						callback:function(){
+							var pullObj=this;
+							pullObj.endPullUpToRefresh(true);
+						}
+					},
+					down:{
+						callback:function(){
+							var pullObj=this;
+							setTimeout(function(){	pullObj.endPullDownToRefresh(true);},500)						
+						}
+					}
+				})
+			})
+			//监听左右滑动事件
+			mui('.mui-slider')[0].addEventListener('slide',function(e){
+				let index=event.detail.slideNumber;
+					vm.activeIndex=index;
+				var pullRefreshView = mui('.mui-scroll')[index];				
+					mui(pullRefreshView).pullToRefresh().pullDownLoading();		          
+			})		
+			apptools.iosBlur();
+			webtool.backQuit();
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,94 @@
+.slider{
+	height: 3rem !important;
+}
+.mui-slider .mui-slider-group .mui-slider-item img{
+	height: 3rem;
+}
+.message{
+	padding: .2rem;
+	font-size: .2rem;
+}
+.message .icon{
+	width: .3rem;
+}
+.message .dot{
+	width: .15rem;
+	position: relative;
+	left: -.15rem;
+}
+.message .arrow{
+	width: .25rem;
+}
+.im-horizontal-gridview{
+	background-color: #FFFFFF;
+	padding: .58rem .5rem;
+	font-size: .3rem;
+}
+.im-horizontal-gridview-2{
+	padding: 0rem .35rem ;
+	font-size: .3rem;
+	height: 7.2rem !important;
+	background-color: #FFFFFF;
+}
+.im-hgridview-icon{
+	width: .55rem;
+	height: .55rem;
+	margin-bottom: .23rem;
+}
+.im-notice{
+    height: 1.8rem;
+    background-color: #F9F9F9;
+    padding: .33rem .45rem;
+    font-size: .3rem;
+}
+.im-notice-txt-line{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 100%;
+}
+.im-notice-txt{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-left: 5%;
+	width: 100%;
+	padding-right: 5%;
+}
+.im-gridview-9{
+	height: 6rem !important;
+	background-color: #FFFFFF !important;
+}
+.mui-grid-view.mui-grid-9 .mui-table-view-cell {
+    border: 0;
+}
+.mui-grid-view.mui-grid-9 .mui-media {
+    color: #000000;
+    padding-top: .45rem !important;
+}
+.im-gridview-9 img{
+	height: .5rem;
+	width: .5rem;
+}
+.im-gridview-9 li{
+	height: 2rem;
+}
+.mui-table-view-cell{
+	padding: 0 !important;
+}
+.mui-slider-indicator .mui-indicator{
+	background-color: #DDDDDD;
+	box-shadow: none;
+	width: 8px;
+	height: 8px;
+}
+.mui-slider-indicator .mui-active.mui-indicator {
+    background: #179FFE;
+}
+.mui-grid-view.mui-grid-9 .mui-table-view-cell>a:not(.mui-btn){
+	padding: 0;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body{
+	font-size: .25rem;
+}
+

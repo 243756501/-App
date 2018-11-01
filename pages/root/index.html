@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css"/>
+	<style>
+		.mui-tab-item img {
+			width: 0.35rem;
+		}
+
+		.mui-tab-label {
+			font-size: 0.15rem;
+			line-height: 0.13rem;
+		}
+        .mui-bar{
+			background-color: #FFFFFF !important;
+		}
+		.mui-bar-tab .mui-tab-item.mui-active {
+			color: #FF8C00 !important;
+		}
+	</style>
+</head>
+
+<body>
+	<nav id="app" class="mui-bar mui-bar-tab">
+		<a v-for="(item,index) in navItemList"  :class="['mui-tab-item',activeIndex==index ? 'mui-active': '']" @tap="navItemClick(index)">
+			<img :src="item.normalUrl">
+			<div class="mui-tab-label">{{item.title}}</div>
+		</a>		
+	</nav>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../config.js" type="text/javascript"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/babel" charset="utf-8">
+		mui.init();
+		
+		var page=["../home/home.html","../business/business.html","","../sample/sample.html","../ucenter/ucenter.html"]
+		
+		var vm=new Vue({
+			el:"#app",
+			data:{
+				navItemList:[
+					{id:"home",title:"首页",normalUrl:"../../img/icon/index-normal.png",activeUrl:"../../img/icon/index-pressed.png"},
+					{id:"bussiness",title:"业务",normalUrl:"../../img/icon/business-normal.png",activeUrl:"../../img/icon/business-pressed.png"},
+					{id:"scan",title:"扫描",normalUrl:"../../img/icon/scan-normal.png",activeUrl:"../../img/icon/scan-pressed.png"},
+					{id:"sample",title:"样品",normalUrl:"../../img/icon/sample-normal.png",activeUrl:"../../img/icon/sample-pressed.png"},
+					{id:"ucenter",title:"我的",normalUrl:"../../img/icon/ucenter-normal.png",activeUrl:"../../img/icon/ucenter-pressed.png"},
+				],
+				activeIndex: 0,			
+				targetIndex: 5
+			},
+			created:function(){				
+			},
+			mounted:function(){
+				document.querySelectorAll('img')[0].src=this.navItemList[0].activeUrl;
+			},
+			methods:{
+				//底部导航栏点击切换相关事件
+				navItemClick:function(index){					
+					this.targetIndex=index;
+					mui.each(document.querySelectorAll('img'),(index,item)=>{
+						if(index==this.targetIndex){						
+							item.src=this.navItemList[index].activeUrl;						
+						}else{
+							item.src=this.navItemList[index].normalUrl;								
+						}		
+														
+					});
+					if(this.activeIndex !== this.targetIndex){						
+						if(this.targetIndex==2){
+							webtool.openWindow('../scan/scan');
+							return;
+						}
+						plus.webview.getWebviewById(page[this.activeIndex]).hide();
+						plus.webview.getWebviewById(page[this.targetIndex]).show();
+						this.activeIndex=this.targetIndex;	
+					}				
+				}
+			}
+		});
+		apptools.backQuit();
+		mui.plusReady(function(){
+			//预加载页面
+			var wb=plus.webview.currentWebview();
+			let index=0;
+			for(let i=0;i<page.length; i++){
+				if(page[i]==""){
+					continue;
+				}
+				let pageStyle;
+				if(i==0 || i==4){
+					pageStyle={top:'0px',bottom:'52px'} 
+				}else{
+					pageStyle={top:'0px',bottom:'52px',statusbar: { background: CONFIG.IMMERSTION_COLOR }};
+				}
+				let fragment=plus.webview.create(
+					page[i],
+					page[i],					
+					pageStyle					
+				);
+				if(index !== i){
+					fragment.hide();		
+				}				
+				wb.append(fragment);									
+			}
+		})
+		//处理软键盘弹起压缩页面问题
+	    var height = document.documentElement.clientHeight || document.body.clientHeight;
+		window.addEventListener('resize',function(){
+			var heightView = document.documentElement.clientHeight || document.body.clientHeight;
+			if(heightView < height) {
+				plus.webview.currentWebview().setStyle({
+					height: height
+				});
+			}
+		}) 
+	</script>
+</body>
+
+</html>

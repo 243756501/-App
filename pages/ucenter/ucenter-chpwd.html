@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="css/ucenter-chpwd.css"/>
+	</head>
+
+	<body>
+		<div id="app">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">修改密码</h1>
+			</header>
+			<div class="main base-bg-white">
+				<div class="line">
+					<div class="desc">
+						旧密码
+					</div>
+					<input type="password" name="" id="" value="" v-mdel="prePwd" />
+				</div>
+				<div class="line">
+					<div class="desc">
+						新密码
+					</div>
+					<input type="password" name="" id="" value="" v-model="newPwd"/>
+				</div>
+				<div class="line">
+					<div class="desc">
+						确认密码
+					</div>
+					<input type="password" name="" id="" value="" v-model="confirmPwd"/>
+				</div>
+				<div class="line">
+					<button class="mui-btn" @tap="confirmClick()">确认修改</button>
+				</div>
+			</div>
+		</div>
+   
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="UTF-8">
+			mui.init();			
+			var vm=new Vue({
+				el:"#app",
+				data:{
+					prePwd:"",
+					newPwd:"",
+					confirmPwd:""
+				},				
+				methods:{
+					confirmClick:function(){
+						if(this.confirmPwd==this.newPwd){
+							mui.toast("修改成功");
+							plus.webview.currentWebview().close();
+						}else{
+							mui.toast("两次输入的密码不一致");
+						}
+					}
+				}			
+			})			
+			apptools.iosBlur();
+			webtool.backQuit();
+		</script>
+	</body>
+
+</html>

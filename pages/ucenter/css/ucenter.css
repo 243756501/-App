@@ -1,0 +1,122 @@
+.header {
+	position: relative;
+	height: 3.5rem;
+}
+
+.bg {
+	height: 100%;
+	width: 100%;
+	background-color: #FF8C00;
+	background-size: 100% 100%;
+	position: absolute;
+	-webkit-filter: blur(1px);
+	-moz-filter: blur(1px);
+	-o-filter: blur(1px);
+	-ms-filter: blur(1px);
+	filter: blur(1px);
+}
+
+.main {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background: rgba(192, 192, 192, 0.1);
+}
+
+.main .set {
+	position: absolute;
+	right: .25rem;
+	top: .5rem;
+	width: .3rem;
+}
+
+.container {
+	width: 1.3rem;
+	height: 1.3rem;
+	border: 2px solid #ADADAD;
+	border-radius: 50%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+}
+
+.avatar {
+	width: 1.15rem;
+	height: 1.15rem;
+	border-radius: 50%;
+}
+
+.dot {
+	position: absolute;
+	bottom: .1rem;
+	right: .1rem;
+	width: .2rem;
+	height: .2rem;
+}
+
+.card {
+	border-radius: .2rem;
+	height: 1.1rem;
+	background-color: #FFFFFF;
+	box-shadow: 0 0 .1rem #DDDDDD;
+	padding: .2rem .3rem;
+}
+
+.list {
+	position: relative;
+	top: -.65rem;
+	width: 95%;
+	margin: 0 auto;
+	font-size: .2rem;
+	color: #888888;
+}
+
+.list .desc {
+	margin-right: .15rem;
+}
+
+.menu {
+	margin-top: .15rem;
+	background-color: #EFEFF4 !important;
+}
+
+.menu .item {
+	line-height: .4rem;
+	border-bottom: 1px dashed #EFEFF4;
+}
+
+.menu .item .version{
+	color: #DDDDDD;
+	position: absolute;
+	right: .8rem;
+}
+
+.menu .item .icon {
+	width: .35rem;
+	margin-right: .2rem;
+}
+
+.mui-table-view-cell {
+	border-radius: .15rem !important;
+	background-color: #FFFFFF;
+
+}
+
+.quit {
+	margin-top: .2rem;
+}
+
+.mui-table-view-cell:after {
+	background-color: #FFFFFF !important;
+}
+
+.footer{
+	position: absolute;
+	bottom: 0;
+	width: 5.8rem;
+	height: 3.7rem;
+	z-index: -1;
+}

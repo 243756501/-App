@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<style>
+			#app{
+				font-size: .2rem;
+			}
+			.avatar{
+				width: .5rem;
+				position: absolute;
+				right: .25rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">用户信息修改</h1>
+				<button class="mui-btn">保存</button>
+			</header>
+			<div class="mui-scroll-wrapper base-content">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-clearfix">
+						<li class="mui-table-view-cell" @tap="galleryPick()">
+							<a  class="mui-navigate-right">头像							
+							<img class="avatar mui-action-preview"  :src="postInfo.avatar"/>							
+						</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>姓名<span class="mui-pull-right">admin</span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>当前帐号<span class="mui-pull-right">243756501</span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>职位编号<span class="mui-pull-right">88888888</span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>联系方式<span class="mui-pull-right">18601234567</span></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+   
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="UTF-8">
+			mui.init();			
+			var vm=new Vue({
+				el:"#app",
+				data:{
+                   postInfo:{
+					   avatar:"../../img/pic/default-avatar.jpg"
+				   }
+				},				
+				methods:{
+					galleryPick:function(){
+						plus.gallery.pick((path)=>{
+							console.log(path);
+							//showImg( path );
+							//createItem(path);
+							this.postInfo.avatar=path;
+						}, function(e){
+							outSet('取消选择图片');
+						}, {filter:'image'});
+					}
+				}			
+			});			
+			vm.$nextTick(function(){
+				mui('.mui-scroll-wrapper').scroll();
+			})
+			apptools.iosBlur();
+			webtool.backQuit();
+		</script>
+	</body>
+
+</html>

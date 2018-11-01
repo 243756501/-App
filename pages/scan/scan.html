@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/scan.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css"/>
+	</head>
+
+	<body class="sm-body">
+		<div id="bcid">
+			<div style="height:40%"></div>
+			<p class="tip">初始化扫码...</p>
+		</div>
+		<div class="sm-top base-flex-between">
+			<div class="mui-action-back"><img src="../../img/icon/scan-back.png"/></div>			
+			<div>
+				<img id="gallery" src="../../img/icon/scan-gallery.png" class="onclick-listener" />
+				<img id="light" src="../../img/icon/scan-light.png" class="onclick-listener" />
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init();
+			var ws = null,
+				wo = null;
+			var scan = null,
+				scanKey = false,
+				domready = false;
+			var tool = {
+				creatScanEvent: function() {
+					scan = new plus.barcode.Barcode('bcid',[plus.barcode.QR,plus.barcode.EAN8,plus.barcode.EAN13]);
+					scan.onmarked = onmarked;
+					scan.start({
+						conserve: true,
+						filename: '_doc/barcode/'
+					});
+				},
+				//初始化扫码
+				initScanEvent: function() {
+					console.log(ws + "==" + window.plus + "==" + domready)
+					if(ws || !window.plus || !domready) {
+						return;
+					}
+					tool.creatScanEvent();
+					//		// 获取窗口对象
+					//		ws = plus.webview.currentWebview();
+					//		// 开始扫描
+					//		ws.addEventListener('show', function() {
+					//		}, false);
+					//		// 显示页面并关闭等待框
+					//		ws.show('pop-in');
+				},
+				lightEvent: function() {
+					scanKey = !scanKey;
+					scan.setFlash(scanKey);
+				},
+				galleryEvent: function() {
+					plus.gallery.pick(function(path) {
+						plus.barcode.scan(path, onmarked, function(error) {
+							plus.nativeUI.alert('无法识别此图片');
+						});
+					}, function(err) {
+						console.log('Failed: ' + err.message);
+					});
+				},
+			
+			}
+			// 二维码扫描成功
+			function onmarked(type, result, file) {
+				switch(type) {
+					case plus.barcode.QR:
+						type = 'QR';
+						break;
+					case plus.barcode.EAN13:
+						type = 'EAN13';
+						break;
+					case plus.barcode.EAN8:
+						type = 'EAN8';
+						break;
+					default:
+						type = '其它' + type;
+						break;
+				}
+				mui.toast('扫描类型：'+type+ "扫描内容：" + result +"扫描文件保存地址："+ file);
+				plus.webview.currentWebview().close();
+			}
+			var initEvent = function() {
+				// 监听DOMContentLoaded事件
+				document.addEventListener('DOMContentLoaded', function() {
+					domready = true;
+					tool.initScanEvent();
+				}, false);
+				mui('.sm-top').on('tap', '.onclick-listener', function() {
+					var viewId = this.id;
+					switch(viewId) {
+						case 'gallery':
+							tool.galleryEvent();
+							break;
+						case 'light':
+							tool.lightEvent();
+							break;
+					}
+				});
+			}();
+			
+			mui.plusReady(function() {
+				tool.initScanEvent();
+				webtool.backQuit();
+			});
+		</script>
+	</body>
+
+</html>

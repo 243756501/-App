@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/lib/pull-top-tips.css"/>
+		<link rel="stylesheet" type="text/css" href="css/home-message.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">消息中心</h1>
+		</header>
+		<div id="app"  class="mui-scroll-wrapper base-content">
+			<div class="mui-scroll">
+				<div class="item base-bg-white">
+					<div class="base-flex-center base-color-grey">2018年01月23日</div>
+					<div class="title">版本更新提醒</div>
+					<div class="desc">高斯检查员app更新啦高斯检查员app更新啦</div>
+				</div>
+				<div class="item base-bg-white">
+					<div class="base-flex-center base-color-grey">2018年01月24日</div>
+					<div class="title">任务安排通知</div>
+					<div class="desc">任务具体详情</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.pullToRefresh.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.pullToRefresh.material.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="utf-8">
+			mui.init();			
+			var vm=new Vue({
+				el:"#app",
+				data:{			
+					
+				},
+				methods:{
+						
+				}			
+			})
+			//vue默认模式是异步渲染。就是你修改了data之后，不是立刻开始渲染DOM结构，而是异步执行。解决vue+滑动组件的冲突问题
+			vm.$nextTick(function () {
+				mui('.mui-scroll-wrapper').scroll();
+                mui('.mui-scroll').pullToRefresh({
+					up:{
+						callback:function(){
+							var pullObj=this;
+							pullObj.endPullUpToRefresh(true);
+						}
+					},
+					down:{
+						callback:function(){
+							var pullObj=this;
+							setTimeout(function(){	pullObj.endPullDownToRefresh(true);},500)						
+						}
+					}
+				})
+			})
+			webtool.backQuit();					
+		</script>
+	</body>
+
+</html>

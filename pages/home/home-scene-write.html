@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/lib/mui.picker.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/home-scene-write.css"/>
+	</head>
+
+	<body>
+		<div id="app">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">添加采样记录</h1>
+				<button class="mui-btn" @tap="saveSampleClick()">保存采样</button>
+			</header>
+			<div>
+				<div  class="mui-scroll-wrapper base-content">
+					<div class="mui-scroll">				
+						<div class="main base-bg-white">
+							<div class="line base-flex-between">
+								<div>采样位置</div>
+								<input type="text" name="" id="" placeholder="请输入采样位置" v-model="postInfo.F_Position"/>
+							</div>
+							<div class="line base-flex-between">
+								<div>室内面积(㎡)</div>
+								<input type="number" name="" id="" placeholder="请输入室内面积" v-model="postInfo.F_Area"/>
+							</div>
+							<div class="line base-flex-between">
+								<div>湿度(%)</div>
+								<input type="number" name="" id="" placeholder="请输入湿度" v-model="postInfo.F_Wet"/>
+							</div>
+							<div class="line base-flex-between" @tap="chooseMac()">
+								<div>温度(℃)</div>
+								<input type="number" name="" id="" placeholder="请选择温度" v-model="postInfo.F_Temp"/>
+							</div>
+							<div class="line base-flex-between">
+								<div>大气压(kPa)</div>
+								<input type="number" name="" id="" placeholder="请输入大气压" v-model="postInfo.F_Kpa"/>
+							</div>
+							<div class="line base-flex-between">
+								<div>采样体积</div>
+								<input type="number" name="" id="" placeholder="请输入采样体积" v-model="postInfo.F_TakeVolume"/>
+							</div>
+							<div class="line base-flex-between">
+								<div>标准采样体积</div>
+								<div>{{F_StandardFlow}}</div>
+							</div>
+						</div>
+						<button class="mui-btn item-addbtn" @tap="addItemClick()">⊕ 添加登记项目</button>
+						<ul class="mui-table-view mui-clearfix slist">
+							<li v-for="(item,index) in postInfo.F_ItemList" class="mui-table-view-cell mui-collapse">
+								<a class="show mui-navigate-right">		
+									{{item.title}}
+								</a>
+								<div class="mui-collapse-content collapse">
+									<div class="base-flex-between base-border-bottom line">
+										<div>仪器</div>
+									</div>
+									<div v-for="(item2,index2) in item.F_Instrument"  class="base-flex-between line card">
+										<div>{{item2.F_InName}}</div>
+										<button class="mui-btn" @tap="chooseMacNumber(index,index2)">{{item2.F_ChooseInNumber || "请选择"}}</button>	
+										<div class="mui-input-row mui-checkbox">
+											<label>是否正常</label>
+											<input name="checkbox1"  type="checkbox"  v-model="item2.F_InStatus"/>
+										</div>
+									</div>	
+									<div v-if="type==0">
+										<div class="base-flex-between base-border-bottom line">
+											<div>室外标态值</div>								
+										</div>
+										<div class="base-flex-between  line card">
+											<div>测得值 Cm,mg/m³</div>
+											<input type="number" name="" id="" value="" placeholder="请输入测得值" v-model="item.F_GetData"/>
+										</div>
+										<div class="base-flex-between  line card">
+											<div>标态值 Cc,mg/m³</div>
+											<div>{{F_LabelData(item.F_GetData,index)}}</div>
+										</div>
+									</div>
+									<div v-if="type==1">
+										<div class="base-flex-between base-border-bottom line">
+											<div>实际含量</div>	
+										</div>
+										<div class="base-flex-between  line card">
+											<div>测得值 Cm,mg/m³</div>
+											<input type="number" name="" id="" value="" placeholder="请输入测得值" v-model="item.F_GetData"/>
+										</div>
+										<div class="base-flex-between  line card">
+											<div>标态值 Cc,mg/m³</div>
+											<div>{{F_LabelData(item.F_GetData,index)}}</div>
+										</div>
+									</div>
+									
+								</div>
+							</li>					
+						</ul>
+					</div>
+				</div>
+				
+			</div>
+		</div>		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="UTF-8">
+			mui.init();	
+			mui.plusReady(function(){
+				let currPage=plus.webview.currentWebview();
+				vm.postInfo=JSON.parse(currPage.data);
+				vm.type=currPage.type;
+			})
+			var vm=new Vue({
+				el:"#app",
+				data:{
+                    type:"",
+					postInfo:{},
+				},				
+				methods:{
+					saveSampleClick:function(){
+						let currPage=plus.webview.currentWebview();
+						let splitPage=plus.webview.getWebviewById('business-split');
+						mui.fire(splitPage,'business_split_add',{ data: this.postInfo ,type: currPage.type});
+						currPage.close();
+					},
+					chooseMacNumber:function(index,index2){
+						let picker=new mui.PopPicker();
+						picker.setData(this.postInfo.F_ItemList[index].F_Instrument[index2].F_InNumberList);
+						picker.show((rs)=>{
+							this.postInfo.F_ItemList[index].F_Instrument[index2].F_ChooseInNumber=rs[0].text;
+						})
+					},
+					addItemClick:function(){
+						this.postInfo.F_ItemList.push({ 
+							id:"1",
+							title:"氨       大泡吸收管（氨）",
+							F_Instrument:[ //仪器
+								{
+									F_InName:"气象色谱仪",//仪器名称
+									F_ChooseInNumber:"",//选择的编号
+									F_InStatus:0,//是否正常
+									F_InNumberList:[ //仪器
+										{ text:'1324CA06' ,value:"1324CA06"},
+										{ text:'1324CA12' ,value:"1324CA12"}
+									],
+									
+								}
+							],
+							
+							F_GetData:"",//测得值
+							F_LabelData:"",//标态值(计算)		
+						})
+					}
+				},
+				computed:{
+					F_StandardFlow:function(){
+						this.postInfo.F_StandardFlow=(this.postInfo.F_TakeVolume * (273/(273+this.postInfo.F_Temp*273))*(this.postInfo.F_Kpa/101.3)).toFixed(2);						
+						return this.postInfo.F_StandardFlow;
+					},	
+					F_LabelData:function(data,index){
+						return function(data,index){	
+							if(data=="" || this.postInfo.F_ItemList[index].F_GetData=="" || this.postInfo.F_StandardFlow=="0.00"){
+								return "0.00";
+							}
+							this.postInfo.F_ItemList[index].F_LabelData=((10*this.postInfo.F_ItemList[index].F_GetData)/this.postInfo.F_StandardFlow).toFixed(2)
+							return this.postInfo.F_ItemList[index].F_LabelData;
+						}
+						
+					},
+				}
+			});
+			vm.$nextTick(function(){				
+               	mui('.mui-scroll-wrapper').scroll();	
+				
+			})
+			
+			apptools.iosBlur();				
+			webtool.backQuit();
+		</script>
+	</body>
+
+</html>

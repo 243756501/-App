@@ -1,0 +1,151 @@
+.main {
+	padding: .05rem .2rem;
+	margin-top: .1rem;
+	font-size: .18rem;
+}
+
+input {
+	background-color: #DDDDDD;
+	width: 100%;
+	margin-bottom: 0 !important;
+	font-size: .18rem;
+	height: .5rem !important;
+	width: 3rem !important;
+	border: 0 !important;
+	text-align: right;
+	padding: 0 !important;
+}
+
+input::-webkit-input-placeholder {
+	color: #DDDDDD;
+	text-align: right;
+}
+
+input::-moz-placeholder {
+	/* Mozilla Firefox 19+ */
+	color: #DDDDDD;
+	text-align: right;
+}
+
+input:-moz-placeholder {
+	/* Mozilla Firefox 4 to 18 */
+	color: #DDDDDD;
+	text-align: right;
+}
+
+input:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: #DDDDDD;
+	text-align: right;
+}
+
+.line {
+	margin: .15rem 0;
+}
+
+.mui-switch-mini {
+	width: .5rem;
+	position: relative;
+}
+
+.mui-switch {
+	height: .3rem;
+}
+
+.mui-switch .mui-switch-handle {
+	width: .25rem;
+	height: .25rem;
+}
+
+.mui-switch-mini.mui-active .mui-switch-handle {
+	transform: translate(12px, 0);
+}
+
+.desc {
+	font-size: .25rem;
+}
+
+.main .mui-btn {
+	border: 0 !important;
+	width: 100%;
+	color: #FFFFFF;
+	background-color: #FF8C00;
+}
+
+.card {
+	background-color: #DDDDDD;
+	border-radius: .05rem;
+	padding: .1rem;
+}
+
+.slist {
+	font-size: .2rem;
+}
+
+.item-addbtn{
+	margin-top: .15rem;
+	height: .8rem;
+	width: 100%;
+}
+
+.mui-collapse-content {
+	background-color: #f8f8f8 !important;
+}
+
+.mui-table-view-cell.mui-active {
+	background-color: #f8f8f8 !important;
+}
+
+.slist .mui-btn {
+	font-size: .18rem;
+	padding: .05rem !important;
+}
+
+.collapse .line {
+	margin-bottom: .15rem;
+}
+
+.slist input {
+	background-color: #F8F8F8;
+}
+
+#popover {
+	width: 80%;
+	margin: auto;
+	height: 4rem;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: #FFFFFF;
+	position: absolute;
+	z-index: 999;
+}
+
+#popover .main {
+	padding: .15rem .4rem;
+}
+
+#popover .action {
+	text-align: right;
+	margin-right: .25rem;
+	margin-top: .3rem;
+}
+
+#popover .action .mui-btn {
+	padding: .1rem .25rem;
+	font-size: .15rem;
+	margin: 0 .15rem;
+}
+
+#popover input {
+	padding: 0 !important;
+}
+
+.mui-checkbox input[type=checkbox]:before,
+.mui-radio input[type=radio]:before {
+	font-size: .3rem;
+	position: relative;
+	top: .1rem;
+}

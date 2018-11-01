@@ -1,0 +1,250 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/lib/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/home-scene-split.css" />
+	</head>
+
+	<body>
+		<div id="app">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">现场采样记录</h1>
+				<button class="mui-btn" @tap="submitClick()">提交记录</button>
+			</header>
+			<div class="mui-scroll-wrapper base-content">
+				<div class="mui-scroll">
+					<div class="main base-bg-white">
+						<div class="line base-flex-center base-border-bottom desc">
+							业务信息
+						</div>
+						<div class="line base-flex-between" @tap="chooseTime()">
+							<div>采样时间</div>
+							<input type="text" name="" id="" placeholder="请选择采样时间" readonly v-model="postInfo.F_TakeTime" />
+						</div>
+						<div class="line base-flex-between">
+							<div>采样前流量(L/min)</div>
+							<input type="number" name="" id="" placeholder="请输入采样前流量" v-model="postInfo.F_PreTakeFlow" />
+						</div>
+						<div class="line base-flex-between">
+							<div>采样后流量(L/min)</div>
+							<input type="number" name="" id="" placeholder="请输入采样后流量" v-model="postInfo.F_AfterTakeFlow" />
+						</div>
+						<div class="line base-flex-between">
+							<div>采样流量(L/min)</div>
+							<input type="number" name="" id="" placeholder="请输入采样流量" v-model="postInfo.F_TakeFlow" />
+						</div>
+						<div class="line base-flex-between" @tap="switchEvent()">
+							<div>是否正常</div>
+							<div :class='["mui-switch mui-switch-mini",postInfo.F_Result==1 ? "mui-active" : ""]'>
+								<div class="mui-switch-handle"></div>
+							</div>
+						</div>
+					</div>
+					<div class="main base-bg-white">
+						<div class="line base-flex-center base-border-bottom desc">
+							采样信息
+						</div>
+						<button class="mui-btn" @tap="addSampleClick(0)" v-if="!postInfo.F_Out.F_Ok">⊕ 填写室外样品</button>
+						<div class="line card" v-if="postInfo.F_Out.F_Ok" @tap="sampleActionClick(0)">
+							<div class="cline base-flex-between">
+								<div>室外({{postInfo.F_Out.F_Area}}㎡)</div>
+								<div>湿度({{postInfo.F_Out.F_Wet}}%) 温度({{postInfo.F_Out.F_Temp}}℃) 大气压({{postInfo.F_Out.F_Kpa}}KPa)</div>
+							</div>
+							<div class="cline base-flex-between">
+								<div>采样体积(L)</div>
+								<div>{{postInfo.F_Out.F_TakeVolume}}</div>
+							</div>
+							<div class="cline base-flex-between">
+								<div>标准采样体积(L)</div>
+								<div>{{postInfo.F_Out.F_StandardFlow}}</div>
+							</div>
+						</div>
+						<button class="mui-btn" @tap="addSampleClick(1)" v-if="!postInfo.F_In.F_Ok">⊕ 填写室内样品</button>
+						<div class="line card" v-if="postInfo.F_In.F_Ok" @tap="sampleActionClick(1)">
+							<div class="cline base-flex-between">
+								<div>室外({{postInfo.F_In.F_Area}}㎡)</div>
+								<div>湿度({{postInfo.F_In.F_Wet}}%) 温度({{postInfo.F_In.F_Temp}}℃) 大气压({{postInfo.F_In.F_Kpa}}KPa)</div>
+							</div>
+							<div class="cline base-flex-between">
+								<div>采样体积(L)</div>
+								<div>{{postInfo.F_In.F_TakeVolume}}</div>
+							</div>
+							<div class="cline base-flex-between">
+								<div>标准采样体积(L)</div>
+								<div>{{postInfo.F_In.F_StandardFlow}}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="UTF-8">
+			mui.init();	
+			var JsonList={
+				F_TakeTime:"",//采样时间
+				F_PreTakeFlow:"",//采样前流量
+				F_AfterTakeFlow:"",//采样后流量
+				F_TakeFlow:"",//采样流量
+				F_Result:1,//1正常 0不正常
+				F_Out:{   //室外样品
+					F_Type:0, //室外0
+					F_Ok:false,
+					F_Position:"",//采样位置
+					F_Area:"",//室内面积
+					F_Wet:"",//湿度
+					F_Temp:"",//温度
+					F_Kpa:"",//压强
+					F_StandardFlow:"",//标准采样体积(计算)
+					F_TakeVolume:"",//采样体积
+					F_ItemList:[
+						{ 
+							id:"1",
+							title:"氨       大泡吸收管（氨）",
+							F_Instrument:[ //仪器
+								{
+									F_InName:"气象色谱仪",//仪器名称
+									F_ChooseInNumber:"",//选择的编号
+									F_InStatus:0,//是否正常
+									F_InNumberList:[ //仪器
+										{ text:'1324CA06' ,value:"1324CA06"},
+										{ text:'1324CA12' ,value:"1324CA12"}
+									],
+									
+								}
+							],
+							
+							F_GetData:"",//测得值
+							F_LabelData:"",//标态值(计算)		
+						}
+					]					
+				},
+				F_In:{ //室内样品
+					F_Type:1, //室内1
+					F_Ok:false,
+					F_Position:"",//采样位置
+					F_Area:"",//室内面积
+					F_Wet:"",//湿度
+					F_Temp:"",//温度
+					F_Kpa:"",//压强
+					F_StandardFlow:"",//标准采样体积(计算)
+					F_TakeVolume:"",//采样体积					
+					F_ItemList:[
+						{ 
+							id:"1",
+						    title:"氨       大泡吸收管（氨）",
+							F_OutValue:"",//室外值
+							F_Instrument:[ //仪器
+								{
+									F_InName:"气象色谱仪",//仪器名称
+									F_ChooseInNumber:"",//选择的编号
+									F_InStatus:0,//是否正常
+									F_InNumberList:[ //仪器
+										{ text:'1324CA06' ,value:"1324CA06"},
+										{ text:'1324CA12' ,value:"1324CA12"}
+									],
+									
+								}
+							],
+							
+							F_GetData:"",//测得值
+							F_LabelData:"",//标态值(计算)
+							F_RealData:"",//实际值(室外没有)
+							F_ResultData:"",//检测结果(室外没有)			
+						}
+					]
+				}
+			}
+			var vm=new Vue({
+				el:"#app",
+				data:{
+					postInfo:JsonList,					
+				},				
+				methods:{
+					submitClick:function(){
+						mui.confirm("是否提交该采样记录","操作提示",["取消","确定"],function(e){
+							if(e.index==1){
+								mui.toast('提交成功');
+								plus.webview.currentWebview().close();
+							}
+						})
+					},
+					switchEvent:function(){
+						this.postInfo.F_Result==1 ? this.postInfo.F_Result=0 : this.postInfo.F_Result=1;													
+					},
+					chooseTime:function(){
+						let option=JSON.parse('{"value":"2015-10-10 10:10","beginYear":2018,"endYear":2020}');
+						let picker=new mui.DtPicker(option);
+						picker.show((rs)=>{
+							this.postInfo.F_TakeTime=rs.text;
+						})
+					},
+					
+					addSampleClick:function(type){
+						let data;
+						type==0 ? data=this.postInfo.F_Out : data=this.postInfo.F_In;
+						webtool.openWindow('home-scene-write',{data:JSON.stringify(data),type:type});
+					},
+					sampleActionClick:function(type){
+						type==0 ? data=this.postInfo.F_Out : data=this.postInfo.F_In;
+						plus.nativeUI.actionSheet( {
+							title:"采样信息操作",
+							cancel:"取消",
+							buttons: [{title:"编辑"},{title:"删除"}]
+						}, function(e){
+							var index = e.index;
+							let data;							
+							switch (index){
+								case 1:
+									webtool.openWindow('home-scene-write',{data:JSON.stringify(data),type:type});
+									break;
+								case 2:{
+									if(type==0){
+										vm.postInfo.F_Out.F_Ok=false;
+									}else{
+										vm.postInfo.F_In.F_Ok=false;
+									}
+									break;	
+								}															
+							}
+						} );
+					}
+				},
+				computed:{
+					
+				}
+			});
+			
+			vm.$nextTick(function(){				
+               	mui('.mui-scroll-wrapper').scroll();	
+				
+			})
+			window.addEventListener('business_split_add',function(e){
+				if(e.detail.type==0){					
+					vm.postInfo.F_Out=e.detail.data;
+					vm.postInfo.F_Out.F_Ok=true;
+				}else{					
+					vm.postInfo.F_In=e.detail.data;
+					vm.postInfo.F_In.F_Ok=true;
+				}
+			})
+			apptools.iosBlur();				
+			webtool.backQuit();
+		</script>
+	</body>
+
+</html>

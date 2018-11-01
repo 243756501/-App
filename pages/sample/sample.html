@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css"/>		
+		<style>
+			img{
+				width: 1.2rem;
+				height: 1.2rem;
+				margin-right: .5rem;
+			}
+			.item{
+				font-size: .25rem;
+				padding: .15rem .25rem;
+				margin-top: .15rem;
+				background-color: #FF8C00;
+				color: #FFFFFF;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">		
+			<h1  class="mui-title">样品</h1>
+		</header>
+		<div id="app" class="mui-scroll-wrapper base-content">
+		    <div class="mui-scroll">
+		        <div v-for="(item,index) in sampleItemList" class="base-flex-horizontal item" @tap="sampleItemClick(item.id)">
+		        	<img :src="item.iconUrl"/>
+		        	<span>{{item.title}}</span>
+		        </div>		        
+		    </div>
+		</div>		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="utf-8">
+			var vm=new Vue({
+				el:"#app",
+				data:{
+					sampleItemList:[
+						{ id:1 ,title:"样品入库",iconUrl:"../../img/icon/sample-into.png"},
+						{ id:2 ,title:"部门领样",iconUrl:"../../img/icon/sample-get.png"},
+						{ id:3 ,title:"部门还样",iconUrl:"../../img/icon/sample-return.png"},
+						{ id:4 ,title:"检样处理",iconUrl:"../../img/icon/sample-deal.png"},
+						{ id:5 ,title:"样品查询",iconUrl:"../../img/icon/sample-search.png"}
+					]
+				},
+				methods:{
+					sampleItemClick:function(sid){
+						switch(sid){
+							case 1:
+							  webtool.openWindow('sample-into');
+							  break;
+							case 2:
+							  webtool.openWindow('sample-get');
+							  break;
+							case 3:
+							  webtool.openWindow('sample-return');
+							  break;
+							case 4:
+							  webtool.openWindow('sample-deal');
+							  break;
+							case 5:
+							  webtool.openWindow('sample-search')
+							  break;
+						}
+					}
+				}
+			});
+			mui.init();
+			mui('.mui-scroll-wrapper').scroll();
+		</script>
+	</body>
+
+</html>

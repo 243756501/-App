@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="css/home-main.css" />
+	</head>
+
+	<body>
+		<div id="app" class="mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div id="slider" class="mui-slider slider">
+					<div class="mui-slider-group mui-slider-loop">
+						<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+						<div class="mui-slider-item mui-slider-item-duplicate">
+							<a href="#">
+								<img :src="galleryList[galleryList.length-1].imgUrl">
+							</a>
+						</div>
+						<!-- 第一张 -->
+						<div v-for="(item,index) in galleryList" class="mui-slider-item">
+							<a href="#">
+								<img :src="item.imgUrl">
+							</a>
+						</div>
+						<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+						<div class="mui-slider-item mui-slider-item-duplicate">
+							<a href="#">
+								<img :src="galleryList[0].imgUrl">
+							</a>
+						</div>
+					</div>
+					<div class="mui-slider-indicator">
+						<div v-for="(item,index) in galleryList" :class="['mui-indicator',index=='0' ? 'mui-active':'']"></div>
+					</div>
+				</div>
+				<div class="base-flex-horizontal message">
+					<div class="im-notice-icon">
+						<img src="../../img/icon/index-annouce.png" class="icon" />
+					</div>
+					<div class="im-notice-txt" @tap="messageItemClick()">
+						<div class="im-notice-txt-line">
+							{{messageInfo}}
+						</div>
+					</div>
+					<div class="base-flex-center">
+						<img src="../../img/icon/reddot.png" class="dot" />
+						<img src="../../img/icon/arrow-right.png" class="arrow" />
+					</div>
+				</div>
+				<ul class="mui-table-view mui-grid-view mui-grid-9 im-gridview-9">
+					<li v-for="(item,index) in gridViewList" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" @tap="gridViewItemClick(item.id)">
+						<a href="#">
+							<img :src="item.iconUrl" />
+							<div class="mui-media-body">{{item.title}}</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../config.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="utf-8">
+			mui.init();			
+			var vm=new Vue({
+				el:"#app",
+				data:{			
+					galleryList:[
+						{ id:0 ,imgUrl:"../../img/pic/index-testbg1.png"},
+						{ id:1 ,imgUrl:"../../img/pic/index-testbg2.png"},
+					],
+					messageInfo:"通知公告通知公告通知公告通知公告通知公告通知公告通知公告通知公告通知公告通知公告",
+					gridViewList:[
+						{ id:0,title:"信息资讯",iconUrl:"../../img/icon/xinxizixun.png"},
+						{ id:1,title:"现场检测",iconUrl:"../../img/icon/zhengcefagui.png"},
+            { id:2,title:"邮包管理",iconUrl:"../../img/icon/richenganpai.png"},
+            { id:3,title:"报告批准",iconUrl:"../../img/icon/jieguoshenpi.png"},
+            { id:4,title:"报告审核",iconUrl:"../../img/icon/baogaoshenpi.png"},
+            { id:5,title:"报告查询",iconUrl:"../../img/icon/baogaochaxun.png"},
+            { id:6,title:"业务查询",iconUrl:"../../img/icon/yewuchaxun.png"},
+            { id:7,title:"快递查询",iconUrl:"../../img/icon/yangpinchaxun.png"},
+						{ id:8,title:"客户信息",iconUrl:"../../img/icon/kehuxinxi.png"},					
+					]			
+				},
+				methods:{
+					messageItemClick:function(){
+						webtool.openWindow('home-message');
+					},
+					gridViewItemClick:function(gid){
+						switch(gid){
+							case 0 :{
+								//信息资讯页面
+							let	newslist = mui.preload({
+									url: 'home-news.html',
+									id: 'home-news',
+									styles: {
+										"render": "always",
+										"popGesture": "hide",
+										"bounce": "vertical",
+										"bounceBackground": "#efeff4",
+										"titleNView":  { //详情页原生导航配置
+			                	backgroundColor: '#f7f7f7', //导航栏背景色
+			                	titleText: '', //导航栏标题
+				                titleColor: '#000000', //文字颜色
+				                type: 'transparent', //透明渐变样式
+			                	autoBackButton: true, //自动绘制返回箭头
+				                splitLine: { //底部分割线
+					                 color: '#cccccc'
+				                }
+			              }
+									}
+								});
+								newslist.show('pop-in',300);
+								//webtool.openWindow('home-news',{},true);
+								break;
+							}
+							case 1: 
+								webtool.openWindow('home-scene');
+								break;
+							case 2:
+							  webtool.openWindow('home-mailbag');
+							  break;
+							case 3:
+							  webtool.openWindow('home-reportapprove')
+							  break;
+							case 4:
+							  webtool.openWindow('home-reportcheck');
+								break;
+							case 5:
+							  webtool.openWindow('home-reportseek');
+								break;
+							case 7:{
+								webtool.openWindow('home-express');
+								break;
+							}
+						}
+					}			
+				}			
+			})
+			//vue默认模式是异步渲染。就是你修改了data之后，不是立刻开始渲染DOM结构，而是异步执行。解决vue+滑动组件的冲突问题
+			vm.$nextTick(function () {
+       mui('.mui-scroll-wrapper').scroll({
+       		deceleration: 0.0005 
+       });
+       mui(".mui-slider").slider({
+       	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+       });		
+			})
+								
+			apptools.backQuit();
+		</script>
+	</body>
+
+</html>
