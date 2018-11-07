@@ -13,83 +13,85 @@
 		<link rel="stylesheet" type="text/css" href="../../css/lib/mui.picker.min.css" />
 		<style>
 			.mui-fullscreen .mui-segmented-control~.mui-slider-group{
-				top:125px;
+				top:1.8rem;
 			}
 		</style>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">样品查询</h1>
-		</header>
-		<div id="app" class="mui-content">
-			<div class="popover" v-if="maskShow">
-				<div class="line base-flex-between">
-					<button>{{sqlWhere.dateType}}</button>
-					<div class="base-flex-horizontal">
-						<button>{{sqlWhere.dateStart}}</button>至<button>{{sqlWhere.dateEnd}}</button>
-					</div>
-				</div>
-				<div class="bottom base-flex-horizontal">
-					<div class="base-flex-center confirm" @tap="popoverConfirm()">确定</div>
-					<div class="base-flex-center" @tap="popoverCancel()">取消</div>
-				</div>
-			</div>
-			<div id="slider" class="mui-slider  mui-fullscreen">
-				<div class="search">
-					<div class="line base-flex-horizontal">
-						<input type="text" placeholder="请输入样品编号/检测编号" v-model="searchWords">
-						<button class="mui-btn" @tap="searchEvent()">搜索</button>
-					</div>
-					<div class="split base-flex-horizontal">
-						<div class="content">
-							<div :class='["select" ,maskShow==true ? "open":""]'>
-								<div @tap="searchPopEvent()">筛选</div>
-
+		<div id="app">
+				<header class="mui-bar mui-bar-nav">
+						<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+						<h1 class="mui-title">样品查询</h1>
+						<button class="mui-btn" @tap="searchPopEvent()">筛选</button>
+					</header>
+					<div id="app" class="mui-content">
+						<div class="popover" v-if="maskShow">
+							<div class="line base-flex-between">
+								<button>{{sqlWhere.dateType}}</button>
+								<div class="base-flex-horizontal">
+									<button>{{sqlWhere.dateStart}}</button>至<button>{{sqlWhere.dateEnd}}</button>
+								</div>
+							</div>
+							<div class="bottom base-flex-horizontal">
+								<div class="base-flex-center confirm" @tap="popoverConfirm()">确定</div>
+								<div class="base-flex-center" @tap="popoverCancel()">取消</div>
+							</div>
+						</div>
+						<div id="slider" class="mui-slider  mui-fullscreen">
+							<div class="search">
+								<div class="line base-flex-horizontal">
+									<input type="text" placeholder="请输入样品编号/检测编号" v-model="searchWords">
+									<button class="mui-btn" @tap="searchEvent()">搜索</button>
+								</div>
+								<div class="split base-flex-horizontal">
+									<div class="content">
+										<div :class='["select" ,maskShow==true ? "open":""]'>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+								<a v-for="(item,index) in swipeList" :class="['mui-control-item',activeIndex==index ? 'mui-active':'']" :href="['#'+item.linkhref]">
+									{{item.title}}
+								</a>
+							</div>
+							<div class="mui-slider-group">
+								<div v-for="(item,index) in swipeList" :id="[item.linkhref]" :class="['mui-slider-item mui-control-content',activeIndex==index? 'mui-active':'']">
+									<div class="mui-scroll-wrapper">
+										<div :id="item.id" class="mui-scroll">
+											<ul class="mui-table-view mui-clearfix">
+												<li class="mui-table-view-cell base-border-bottom" @tap="reportItemClick()">
+													<div class="line base-flex-between">
+														<div>样品编号:<span class="desc">1811615227</span></div>
+														<div>检测编号:<span class="desc">1813407923</span></div>
+													</div>
+													<div class="line base-flex-between">
+														<div>样品总称:<span class="desc">白蚁检测控制装置</span></div>
+														<div>样品名称:<span class="desc">原味香酥肉松</span></div>
+													</div>																			
+													<div class="line base-flex-between">
+														<div>样品数量:<span class="desc">11</span></div>
+														<div>生产日期:<span class="desc">2018-11-12</span></div>
+													</div>
+													<div class="line base-flex-between">
+														<div>消耗数量:<span class="desc">0</span></div>
+														<div>留样数量:<span class="desc">2</span></div>
+													</div>
+													<div class="line base-flex-between">
+														<div>型号规格:<span class="desc">S0-03</span></div>
+														<div>委托单位:<span class="desc">杭州双欧科技有限公司</span></div>
+													</div>
+											</ul>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-					<a v-for="(item,index) in swipeList" :class="['mui-control-item',activeIndex==index ? 'mui-active':'']" :href="['#'+item.linkhref]">
-						{{item.title}}
-					</a>
-				</div>
-				<div class="mui-slider-group">
-					<div v-for="(item,index) in swipeList" :id="[item.linkhref]" :class="['mui-slider-item mui-control-content',activeIndex==index? 'mui-active':'']">
-						<div class="mui-scroll-wrapper">
-							<div :id="item.id" class="mui-scroll">
-								<ul class="mui-table-view mui-clearfix">
-									<li class="mui-table-view-cell base-border-bottom" @tap="reportItemClick()">
-										<div class="line base-flex-between">
-											<div>样品编号:<span class="desc">1811615227</span></div>
-											<div>检测编号:<span class="desc">1813407923</span></div>
-										</div>
-										<div class="line base-flex-between">
-											<div>样品总称:<span class="desc">白蚁检测控制装置</span></div>
-											<div>样品名称:<span class="desc">原味香酥肉松</span></div>
-										</div>																			
-										<div class="line base-flex-between">
-											<div>样品数量:<span class="desc">11</span></div>
-											<div>生产日期:<span class="desc">2018-11-12</span></div>
-										</div>
-										<div class="line base-flex-between">
-											<div>消耗数量:<span class="desc">0</span></div>
-											<div>留样数量:<span class="desc">2</span></div>
-										</div>
-										<div class="line base-flex-between">
-											<div>型号规格:<span class="desc">S0-03</span></div>
-											<div>委托单位:<span class="desc">杭州双欧科技有限公司</span></div>
-										</div>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			
 		</div>
-
+	
 
 		<script src="../../js/mui.js"></script>
 		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>

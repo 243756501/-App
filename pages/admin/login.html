@@ -7,30 +7,26 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
-		<link rel="stylesheet" type="text/css" href="css/login.css"/>
+		<link rel="stylesheet" type="text/css" href="css/login.css" />
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">登录</h1>
-		</header>
-		<div id="app"  class="mui-content base-bg-white mui-fullscreen">
+		<div id="app" class="mui-content base-bg-white mui-fullscreen">
 			<div class="logo base-flex-center">
 				<img src="../../img/pic/app-logo.png">
 			</div>
 			<div class="main">
-				<div class="line base-flex-horizontal">
-					<img src="../../img/icon/username.png" class="icon"><input type="text" v-model="postInfo.username" placeholder="请输入帐号"/>
+				<div class="line desc base-clear-border">
+					方圆用户登录
 				</div>
 				<div class="line base-flex-horizontal">
-					<img src="../../img/icon/password.png" class="icon"><input type="password" v-model="postInfo.password" placeholder="请输入密码"/>
+					<img src="../../img/icon/username.png" class="icon"><input type="text" v-model="userInfo.LoginName" placeholder="请输入帐号" />
 				</div>
-				<div class="line base-clear-border base-flex-between">										
-					<div>记住密码</div>
-					<div :class='["mui-switch mui-switch-mini",switchOption==true ? "mui-active" : ""]' @tap="switchEvent()">
-						<div class="mui-switch-handle"></div>
-					</div>
+				<div class="line base-flex-horizontal" style="margin-bottom: .33rem ;">
+					<img src="../../img/icon/password.png" class="icon"><input type="password" v-model="userInfo.Password" placeholder="请输入密码" />
+				</div>
+				<div class="forget">
+					忘记密码？
 				</div>
 				<div class="line base-clear-border">
 					<button class="mui-btn mui-btn-block" @tap="loginEvent">登录</button>
@@ -41,29 +37,53 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../api/admin/admin.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/babel" charset="UTF-8">				
+		<script src="../../js/httptool.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/babel" charset="UTF-8">
 			var vm=new Vue({
 				el:"#app",
 				data:{
-					switchOption:true,
-					postInfo:{
-						username:"",
-						password:""
+					userInfo:{
+						"LoginName":"",
+						"Password":""
 					}
-				},				
+				},		
 				methods:{
-					switchEvent:function(){
-						this.switchOption=!this.switchOption;
-					},
-					loginEvent:function(){
-						this.switchOption==true ? apptools.setUserInfo(this.postInfo) : "" ;
-						webtool.openWindow('../root/index',{},true);
+					loginEvent:function(){			
+						if(this.userInfo.LoginName=="" || this.userInfo.Password==""){
+							mui.toast('请输入帐号密码');
+							return;
+						}
+					  let loading=plus.nativeUI.showWaiting();
+						admin.userLogin(this.userInfo,function(data){
+							apptools.setUserInfo(data);
+							mui.toast('登录成功');
+							loading.close();
+							let allActivity=plus.webview.all();
+							for(let i in allActivity) {
+								mui.fire(allActivity[i], 'userChange', {
+									data: data
+								});
+							}
+							webtool.openWindow('../root/index',{},true);
+						})
+						
 					}
 				},
 			});
 			mui.init();		
+			//获取原始窗口的高度
+			var originalHeight=document.documentElement.clientHeight || document.body.clientHeight;			
+			window.onresize=function(){			
+			    //软键盘弹起与隐藏  都会引起窗口的高度发生变化
+			    var  resizeHeight=document.documentElement.clientHeight || document.body.clientHeight;		
+			    if(resizeHeight*1<originalHeight*1){ //resizeHeight<originalHeight证明窗口被挤压了		
+			         plus.webview.currentWebview().setStyle({  height:originalHeight });	
+			    }
+			}
 			apptools.iosBlur();
 			apptools.backQuit();
 		</script>

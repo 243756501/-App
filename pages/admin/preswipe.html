@@ -29,7 +29,7 @@
         	  <div class="mui-slider-group">        		
         		<div v-for="(item,index) in swipeList"  class="mui-slider-item mui-fullscreen">
         		  <img :src="item.url" >
-				  <button class="mui-btn" v-if="index==(swipeListLength-1)" @tap="goLoginClick()">点击进入</button>
+				         <button class="mui-btn" v-if="index==(swipeListLength-1)" @tap="goLoginClick()">点击进入</button>
         		</div>       		
         	  </div>
         	</div>
@@ -65,9 +65,14 @@
 				}
 			});
 			vm.$nextTick(function(){				
-                mui(".mui-slider").slider();		
+         mui(".mui-slider").slider();		
+			});
+			mui.plusReady(function(){
+				if(apptools.getUserInfo()){
+					webtool.openWindow('../root/index',{},true);
+				}				
 			})
-							
+		
 			apptools.backQuit();
 		</script>
 	</body>

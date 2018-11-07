@@ -20,7 +20,7 @@
 			<div id="slider" class="mui-slider  mui-fullscreen">
 				<div class="search">
 					<div class="line base-flex-horizontal">
-						<input type="text" placeholder="请输入客户单位/委托单号" v-model="searchWords">						
+						<input type="text" placeholder="请输入委托单号" v-model="postInfo.SqlSearch">						
 						<button class="mui-btn"  @tap="searchEvent()">搜索</button>					
 					</div>
 				</div>
@@ -34,32 +34,35 @@
 						<div class="mui-scroll-wrapper">
 							<div :id="item.id" class="mui-scroll">
 								<ul class="mui-table-view mui-clearfix">
-									<li class="mui-table-view-cell base-border-bottom" @tap="busItemClick()">
+									<li v-for="(item,index) in item.datalist" class="mui-table-view-cell base-border-bottom" @tap="busItemClick(item.BizID)">
 										<div class="line base-flex-between">
 											<div class="base-flex-horizontal">
 												<div class="desc">客户单位:</div>
-												<div>浙江申永达设备安装有限公司</div>
+												<div>{{item.CustomerName}}</div>
 											</div>
-                                            <div class="status">已提交</div>
+                                            <div class="status">{{item.MobileSubmitName}}</div>
 										</div>
 										<div class="line base-flex-between">
 											<div class="base-flex-horizontal">
 												<div class="desc">委托单号:</div>
-												<div>412893967651</div>
+												<div>{{item.EntrustNo}}</div>
 											</div>
+
+										</div>
+										<div class="line base-flex-between">
+											
 											<div class="base-flex-horizontal">
 												<div class="desc">检测编号:</div>
-												<div>1811109055</div>
+												<div>{{item.ReportNo}}</div>
 											</div>
 										</div>
 										<div class="line base-flex-between">
 											<div class="base-flex-horizontal">
 												<div class="desc">样品总称:</div>
-												<div>铜芯交联聚乙烯</div>
+												<div>{{item.SampleName}}</div>
 											</div>
 											<div class="base-flex-horizontal">
-												<div class="desc">受理时间:</div>
-												<div>2018-10-29 10:28</div>
+												<div>{{item.AcceptDate}}</div>
 											</div>
 										</div>
 									</li>									
@@ -78,17 +81,34 @@
 		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/mui.pullToRefresh.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/mui.pullToRefresh.material.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../api/home/home.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/httptool.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/babel" charset="utf-8">
 			webtool.backQuit();
 			mui.init();
+			var tool={
+				//获取现场检测业务列表
+				getBizQuery:function(postInfo){
+					home.getBizQuery(vm.postInfo,function(data){	
+						if(data.biz_Main){
+							vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
+						}else{
+							mui.toast('没有相关数据');
+						}
+																	
+					})
+				}
+			}
 			var vm=new Vue({
 				el:"#slider",
 				data:{
-					activeIndex:0,
 					searchWords:"",
+					activeIndex:0,
 					postInfo:{
-						page:1,//当前页面数
-						pageSize:10,//分页条数
+						PageIndex:0,//当前页面数
+						PageSize:10,//分页条数
+						SqlSearch:"",//检索条件
+						MobileSubmit:""
 					},
 					swipeList:[
 						{ id:1,title:"全部",linkhref:"item1mobile1",datalist:[] },
@@ -98,43 +118,71 @@
 				},
 				methods:{
 					searchEvent:function(){
-						alert("搜索的关键字:  "+this.searchWords)
+						tool.getBizQuery();
 					},
-					busItemClick:function(){
-						webtool.openWindow('home-scene-split');
+					busItemClick:function(BizID){
+						webtool.openWindow('home-scene-split',{ data: BizID });
 					}
 				}
 			})
 			vm.$nextTick(function(){
 				mui('.mui-scroll-wrapper').scroll();				
 				mui("#slider").slider();		
-			})
+			});
 			//上下拉初始事件
 			mui.each(document.querySelectorAll('.mui-scroll'),function(index,item){
 				mui(item).pullToRefresh({
 					up:{
 						callback:function(){
 							var pullObj=this;
-							pullObj.endPullUpToRefresh(true);
+							vm.postInfo.PageIndex++;
+     						home.getBizQuery(vm.postInfo,function(data){
+								if(data.biz_Main){
+									vm.swipeList[vm.activeIndex].datalist=vm.swipeList[vm.activeIndex].datalist.concat(data.biz_Main);
+									data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
+								}else{
+									pullObj.endPullUpToRefresh(true)
+								}																									
+							})
+							
 						}
 					},
 					down:{
 						callback:function(){
 							var pullObj=this;
-							setTimeout(function(){	pullObj.endPullDownToRefresh(true);},500)						
+							vm.postInfo.PageIndex=1;
+							home.getBizQuery(vm.postInfo,function(data){
+								if(data.biz_Main){
+									vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
+									pullObj.endPullDownToRefresh(true);
+									pullObj.refresh();
+									pullObj.endPullUpToRefresh(false);	
+								}else{
+									pullObj.endPullDownToRefresh(true);
+								}																							
+							})				
 						}
 					}
 				})
-			})
+			});
 			//监听左右滑动事件
 			mui('.mui-slider')[0].addEventListener('slide',function(e){
 				let index=event.detail.slideNumber;
+				postInfo.SqlSearch="";
 					vm.activeIndex=index;
+					if(index==0){
+						vm.postInfo.MobileSubmit="";
+					}else if(index==1){
+						vm.postInfo.MobileSubmit=0;
+					}else{
+						vm.postInfo.MobileSubmit=1;
+					}
 				var pullRefreshView = mui('.mui-scroll')[index];				
 					mui(pullRefreshView).pullToRefresh().pullDownLoading();		          
-			})
-		
-
+			});
+			apptools.iosBlur();
+			//获取第一组数据
+			tool.getBizQuery();
 		</script>
 	</body>
 

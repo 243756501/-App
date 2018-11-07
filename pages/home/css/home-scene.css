@@ -19,11 +19,12 @@
 }
 
 .mui-fullscreen .mui-segmented-control~.mui-slider-group {
-	top: 50px;
+	top: 1.8rem;
 }
 
 .line {
 	font-size: .2rem;
+	margin-bottom: .1rem;
 }
 
 .line .desc {
@@ -49,12 +50,10 @@
 	background-color: #FFFFFF;
 }
 
-.mui-fullscreen .mui-segmented-control~.mui-slider-group {
-	top: 100px;
-}
 
 .search {
 	background-color: #FFFFFF;
+	height: .88rem;	
 }
 
 .search input {
@@ -68,7 +67,8 @@
 }
 
 .search .line {
-	padding: .25rem;
+	height: .88rem;
+	padding: 0 .25rem;
 }
 
 .search .line button {

@@ -4,7 +4,9 @@
 .mui-bar-nav {
 	background-color: #FF8C00;
 }
-
+.mui-bar-nav~.mui-content{
+	padding-top: 44px;
+}
 /*背景白色*/
 .base-bg-white {
 	background-color: #FFFFFF;
@@ -12,6 +14,7 @@
 
 .mui-bar-nav .mui-title {
 	color: #FFFFFF;
+	height: .8rem;
 }
 
 .base-content {
@@ -31,13 +34,25 @@
 	color: #FFFFFF;
 	border: 1px solid #ffffff !important;
 	position: absolute;
+	top: 50%;
+	height: 30px;
+	width: auto;
+	margin-top: -15px;
 	right: .1rem;
-	padding: .08rem !important;
 }
 
 /*标题栏返回键*/
 .mui-bar-nav.mui-bar .mui-icon {
 	color: #FFFFFF;
+	position: absolute;
+	height: .44rem;
+	width: .44rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 50%;
+	margin: -.22rem 0 0 0;
+	padding: 0;
 }
 
 /*上下拉插件样式*/
@@ -113,4 +128,8 @@ input:-ms-input-placeholder {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+}
+
+.mui-segmented-control .mui-control-item{
+	line-height: .76rem !important;
 }

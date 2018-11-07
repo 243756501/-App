@@ -11,6 +11,11 @@
 		<link rel="stylesheet" type="text/css" href="css/home-scene.css" />
 		<link rel="stylesheet" type="text/css" href="css/home-reportseek.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/lib/mui.picker.min.css"/>
+		<style>
+			.search .line{
+				padding: .25rem;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -18,39 +23,39 @@
 			<header class="mui-bar mui-bar-nav">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 				<h1 class="mui-title">报告查询</h1>
+				<button class="mui-btn" @tap="searchPopEvent()">筛选</button>
 			</header>
+			<div class="split base-flex-horizontal">
+				<div class="content">
+					<div :class='["select" ,maskShow==true ? "open":""]'>
+						<div class="popover" v-if="maskShow">
+							<div class="line base-flex-between">
+								<div>报告状态</div>
+								<button @tap="searchReportStatus()">{{sqlWhere.reportStatus}}</button>
+							</div>
+							<div class="line base-flex-between">
+								<div>费用状态</div>
+								<button>{{sqlWhere.feeStatus}}</button>
+							</div>
+							<div class="line base-flex-between">
+								<button>{{sqlWhere.dateType}}</button>
+								<div class="base-flex-horizontal">
+									<button>{{sqlWhere.dateStart}}</button>至<button>{{sqlWhere.dateEnd}}</button>
+								</div>
+							</div>
+							<div class="bottom base-flex-horizontal">
+								<div class="base-flex-center confirm" @tap="popoverConfirm()">确定</div>
+								<div class="base-flex-center" @tap="popoverCancel()">取消</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="mui-content">
 				<div class="search">
 					<div class="line base-flex-horizontal">
 						<input type="text" placeholder="请输入委托单号/报告编号" v-model="searchWords">
 						<button class="mui-btn" @tap="searchEvent()">搜索</button>
-					</div>
-					<div class="split base-flex-horizontal">
-						<div class="content">
-							<div :class='["select" ,maskShow==true ? "open":""]'>
-								<div  @tap="searchPopEvent()">筛选</div>
-								<div class="popover" v-if="maskShow">
-									<div class="line base-flex-between">
-										<div>报告状态</div>
-										<button @tap="searchReportStatus()">{{sqlWhere.reportStatus}}</button>
-									</div>
-									<div class="line base-flex-between">
-										<div>费用状态</div>
-										<button>{{sqlWhere.feeStatus}}</button>
-									</div>
-									<div class="line base-flex-between">
-										<button>{{sqlWhere.dateType}}</button>
-										<div class="base-flex-horizontal">
-											<button>{{sqlWhere.dateStart}}</button>至<button>{{sqlWhere.dateEnd}}</button>
-										</div>
-									</div>
-									<div class="bottom base-flex-horizontal">
-										<div class="base-flex-center confirm" @tap="popoverConfirm()">确定</div>
-										<div class="base-flex-center" @tap="popoverCancel()">取消</div>
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 				<div class="mui-scroll-wrapper base-content main">

@@ -1,5 +1,5 @@
 .main {
-	margin-top: 2.3rem;
+	margin-top: 1.9rem;
 	font-size: .18rem;
 }
 
@@ -25,7 +25,7 @@
 
 .popover {
 	position: fixed;
-	top: 2.3rem;
+	top: .88rem;
 	right: 0;
 	bottom: 0;
 	left: 0;
@@ -65,25 +65,7 @@
 	position: relative;
 }
 
-.content .select:after {
-	content: '';
-	display: block;
-	width: .1rem;
-	height: .1rem;
-	border-left: 1px #000 solid;
-	border-bottom: 1px #000 solid;
-	position: absolute;
-	top: .06rem;
-	right: .4rem;
-	transform: rotate(-45deg);
-	transition: transfrom .3s ease-in, top .3s ease-out;
-}
 
-.content .select.open:after {
-	transform: rotate(-225deg);
-	top: .1rem;
-	transition: all .1s ease-in;
-}
 
 .bottom {
 	position: absolute;

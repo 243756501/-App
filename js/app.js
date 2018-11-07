@@ -378,7 +378,7 @@ var apptools = {
 	},
 
 	getUserInfo: function() {
-		var userInfo = localStorage.getItem('userInfo');
+		var userInfo = localStorage.getItem(CONFIG.STORAGE_PRE+'userInfo');
 		return userInfo;
 	},
 	/*
@@ -485,7 +485,10 @@ var webtool = {
 			id: webId,
 			styles: immser,
 			extras:data,			
-			aniShow: 'pop-in',
+			show:{
+				aniShow:"pop-in",
+				duration:300
+			},
 			waiting:{
 				title:'加载中...',
 				options: {

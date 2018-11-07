@@ -1,26 +1,35 @@
 .logo {
-	height: 3rem;
+	margin-top: 1.68rem;
 }
 
 .logo img {
-	width: 1.5rem;
+	width: 1.46rem;
 	border-radius: .15rem;
 }
 
 .main {
-	width: 80%;
-	margin: 0 auto;
-	margin-top: 5%;
+	margin: 0 1.1rem;
+	margin-top: 1.23rem;
 	font-size: .2rem;
 }
 
 .line {
 	border-bottom: 1px solid #DDDDDD;
-	margin-bottom: 5%;
+	margin-bottom: .495rem;
+
+}
+
+.desc {
+	font-size: .28rem;
+	font-family: MicrosoftYaHei;
+	font-weight: 400;
+	color: #FF8C00;
+	line-height: .18rem;
 }
 
 .line .icon {
-	width: .35rem;
+	width: .3rem;
+	height: .3rem;
 }
 
 .line input {
@@ -28,21 +37,27 @@
 	border: none !important;
 }
 
+.forget {
+	text-align: right;
+	margin-bottom: .38rem;
+	font-size: .16rem;
+	font-family: MicrosoftYaHei;
+	font-weight: 400;
+	color: rgba(112, 112, 112, 1);
+	line-height: .18rem;
+}
+
 .line button {
-	background-color: #FF8C00;
+	background: #FF8C00;
 	border: 0 !important;
 	color: #FFFFFF;
 	font-size: .25rem;
-	height: .7rem;
-	padding: .15rem;
-	border-radius: .5rem;
-	margin-top: .2rem;
+	height: .72rem;
+	padding: 0 !important;
+	border-radius: .36rem;
 }
 
-.mui-switch.mui-active {
-	background-color: #FF8C00;
-	border-color: #FF8C00;
-}
+
 
 /*placeholder字体颜色*/
 input::-webkit-input-placeholder {
@@ -66,4 +81,17 @@ input:-ms-input-placeholder {
 	/* Internet Explorer 10-11 */
 	color: #AAAAAA;
 	font-size: .18rem;
+}
+
+.reg {
+	position: absolute;
+	top: .71rem;
+	right: .4rem;
+	width: .58rem;
+	height: .28rem;
+	font-size: .28rem;
+	font-family: MicrosoftYaHei;
+	font-weight: 400;
+	color: rgba(45, 167, 223, 1);
+	line-height: .18rem;
 }

@@ -13,6 +13,7 @@ input {
 	width: 3rem !important;
 	border: 0 !important;
 	text-align: right;
+	padding: 0 !important;
 }
 
 input::-webkit-input-placeholder {

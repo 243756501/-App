@@ -15,7 +15,6 @@
 			<div class="header">
 				<div class="bg"></div>
 				<div class="main">
-					<img src="../../images/pics/ucenter-set.png" class="set" />
 					<div class="container base-flex-center">
 						  <img src="../../img/pic/default-avatar.jpg" class="avatar"/>
 							<img src="../../img/pic/ucenter-online.png" class="dot"/>
@@ -27,13 +26,12 @@
 						<div class="base-flex-between">
 							<div class="base-flex-horizontal">
 								<diV class="desc">管理员:</div>
-								<diV>00001</div>
-							</div>
-							<div>2018-06-05</div>
+								<diV>{{userInfo.UserName}}</div>
+							</div>							
 						</div>
 						<div class="base-flex-horizontal">
 							<div class="desc">ID:</div>
-							<div>201320100127</div>
+							<div>{{userInfo.UserID}}</div>
 						</div>
 				</div>
 				<ul class="mui-table-view menu mui-clearfix">
@@ -77,8 +75,11 @@
 			var vm=new Vue({
 				el:"#app",
 				data:{
-					
-				},				
+					userInfo:{}
+				},
+				created:function(){
+					this.userInfo=JSON.parse(apptools.getUserInfo());
+				},
 				methods:{
 					editPwdEvent:function(){
 						webtool.openWindow('ucenter-chpwd');
@@ -90,7 +91,7 @@
 						mui.confirm("确定退出当前帐户","退出提醒",["取消","确认"],function(e){
 							if(e.index==1){
 								 apptools.clearUserInfo();
-								 webtool.openWindow('../admin/login');
+								 webtool.openWindow('../admin/login',{},true);
 							}
 						})
 					},
@@ -98,7 +99,10 @@
 						webtool.openWindow('ucenter-edit');
 					}
 				}			
-			})			
+			});
+			window.addEventListener('userchange',function(e){
+				vm.userInfo=e.detail.data;
+			})
 			apptools.backQuit();
 		</script>
 	</body>
