@@ -386,6 +386,7 @@ var apptools = {
 	 */
 	clearUserInfo: function() {
 		localStorage.setItem(CONFIG.STORAGE_PRE+'userInfo', '');
+		localStorage.setItem(CONFIG.STORAGE_PRE+'WEB_SERVER','');
 	},
 	/*
 	 * 保存用户信息

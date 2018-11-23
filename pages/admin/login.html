@@ -7,11 +7,21 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/lib/animate.min.css"/>
 		<link rel="stylesheet" type="text/css" href="css/login.css" />
 	</head>
 
 	<body>
 		<div id="app" class="mui-content base-bg-white mui-fullscreen">
+			<div class="mask base-flex-center animated bounceInDown" v-if="netKey">
+				<div class="container base-bg-white">
+					<div class="title base-flex-vertical base-border-bottom">请输入域名</div>
+					<div class="view">
+						<input type="text" v-model="netUrl" placeholder="http://{{your domain here}}/"/>
+					</div>
+					<button type="button" @tap="netConfirmEvent()">确定</button>
+				</div>
+			</div>
 			<div class="logo base-flex-center">
 				<img src="../../img/pic/app-logo.png">
 			</div>
@@ -25,16 +35,16 @@
 				<div class="line base-flex-horizontal" style="margin-bottom: .33rem ;">
 					<img src="../../img/icon/password.png" class="icon"><input type="password" v-model="userInfo.Password" placeholder="请输入密码" />
 				</div>
-				<div class="forget">
-					忘记密码？
+				<div class="forget" @tap="reWriteEvent()">
+					重新填写域名
 				</div>
 				<div class="line base-clear-border">
 					<button class="mui-btn mui-btn-block" @tap="loginEvent">登录</button>
 				</div>
 			</div>
 		</div>
-
-		<script src="../../js/mui.min.js"></script>
+  
+		<script src="../../js/mui.js"></script>
 		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
@@ -64,6 +74,9 @@
 						}
 					}
 				});
+				if(!localStorage.getItem(CONFIG.STORAGE_PRE+'WEB_SERVER')){
+					vm.netKey=true;
+				}
 			})
 			
 			var vm=new Vue({
@@ -73,9 +86,34 @@
 						"LoginName":"",
 						"Password":"",
 						"DeviceID":""
-					}
+					},
+					netUrl:"",
+					netKey:false
 				},		
 				methods:{
+					reWriteEvent:function(){
+						vm.netKey=true;
+					},
+					netConfirmEvent:function(){
+						if(this.netUrl==""){
+							mui.toast('域名不能为空');
+							return;
+						}
+						CONFIG.WEB_SERVER=this.netUrl;
+						localStorage.setItem(CONFIG.STORAGE_PRE+'WEB_SERVER',this.netUrl);
+						let load=plus.nativeUI.showWaiting();
+						admin.userLogin(this.userInfo,function(data){
+							load.close();
+							if(typeof data === 'object'){
+								mui.toast('域名设置成功')
+								vm.netKey=false;
+							}else{
+								mui.toast('当前域名无效')
+								CONFIG.WEB_SERVER="";
+								localStorage.setItem(CONFIG.STORAGE_PRE+'WEB_SERVER',"");
+							}
+						})												
+					},
 					loginEvent:function(){			
 						if(this.userInfo.LoginName=="" || this.userInfo.Password==""){
 							mui.toast('请输入帐号密码');
@@ -87,7 +125,7 @@
 							loading.close();
 							if(data.status=="1" && data.UserID !== ""){
 								apptools.setUserInfo(data);
-								mui.toast('登录成功');								
+								mui.toast('登录成功');			
 								let allActivity=plus.webview.all();
 								for(let i in allActivity) {
 									mui.fire(allActivity[i], 'userChange', {

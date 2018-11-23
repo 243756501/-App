@@ -7493,6 +7493,7 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
                         index: index || 0,
                         value: input && input.value || ''
                     });
+										alert(result)
                     if (result === false) { //返回false则不关闭当前popup
                         return;
                     }
