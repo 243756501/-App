@@ -44,3 +44,12 @@ input:-ms-input-placeholder {
 	margin-bottom: .15rem !important;
 	border-bottom: 1px solid #DDDDDD;
 }
+.mui-table-view-cell{
+	margin-bottom: .15rem;
+}
+.mui-table-view{
+	background-color: #EFEFF4 !important; 
+}
+.deline{
+	padding: .15rem 0;
+}

@@ -23,13 +23,13 @@
 			</div>
 			<div class="list">
 				<div class="card">
-						<div class="base-flex-between">
+						<div class="base-flex-between line">
 							<div class="base-flex-horizontal">
 								<diV class="desc">管理员:</div>
 								<diV>{{userInfo.UserName}}</div>
 							</div>							
 						</div>
-						<div class="base-flex-horizontal">
+						<div class="base-flex-horizontal line">
 							<div class="desc">ID:</div>
 							<div>{{userInfo.UserID}}</div>
 						</div>
@@ -75,10 +75,16 @@
 			var vm=new Vue({
 				el:"#app",
 				data:{
-					userInfo:{}
+					userInfo:{
+					  UserName:"default",
+						UserID:"1"
+					}
 				},
 				created:function(){
-					this.userInfo=JSON.parse(apptools.getUserInfo());
+					//因为预载时还没有用户信息
+					if(apptools.getUserInfo()){
+						this.userInfo=JSON.parse(apptools.getUserInfo());
+					}					
 				},
 				methods:{
 					editPwdEvent:function(){
@@ -100,7 +106,8 @@
 					}
 				}			
 			});
-			window.addEventListener('userchange',function(e){
+			//监听登录
+			window.addEventListener('userChange',function(e){
 				vm.userInfo=e.detail.data;
 			})
 			apptools.backQuit();

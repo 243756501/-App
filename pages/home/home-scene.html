@@ -40,7 +40,7 @@
 												<div class="desc">客户单位:</div>
 												<div>{{item.CustomerName}}</div>
 											</div>
-                                            <div class="status">{{item.MobileSubmitName}}</div>
+                      <div class="status">{{item.MobileSubmitName}}</div>
 										</div>
 										<div class="line base-flex-between">
 											<div class="base-flex-horizontal">
@@ -84,21 +84,11 @@
 		<script src="../../api/home/home.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/httptool.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/babel" charset="utf-8">
-			webtool.backQuit();
 			mui.init();
-			var tool={
-				//获取现场检测业务列表
-				getBizQuery:function(postInfo){
-					home.getBizQuery(vm.postInfo,function(data){	
-						if(data.biz_Main){
-							vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
-						}else{
-							mui.toast('没有相关数据');
-						}
-																	
-					})
-				}
-			}
+			webtool.backHide();
+			mui.plusReady(function(){
+			    
+			})
 			var vm=new Vue({
 				el:"#slider",
 				data:{
@@ -108,7 +98,7 @@
 						PageIndex:0,//当前页面数
 						PageSize:10,//分页条数
 						SqlSearch:"",//检索条件
-						MobileSubmit:""
+						MobileSubmit:"",
 					},
 					swipeList:[
 						{ id:1,title:"全部",linkhref:"item1mobile1",datalist:[] },
@@ -118,7 +108,7 @@
 				},
 				methods:{
 					searchEvent:function(){
-						tool.getBizQuery();
+						mui(mui('.mui-scroll')[0]).pullToRefresh().pullDownLoading();	
 					},
 					busItemClick:function(BizID){
 						webtool.openWindow('home-scene-split',{ data: BizID });
@@ -141,6 +131,7 @@
 									vm.swipeList[vm.activeIndex].datalist=vm.swipeList[vm.activeIndex].datalist.concat(data.biz_Main);
 									data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
 								}else{
+									mui.toast(data.message);
 									pullObj.endPullUpToRefresh(true)
 								}																									
 							})
@@ -150,15 +141,17 @@
 					down:{
 						callback:function(){
 							var pullObj=this;
-							vm.postInfo.PageIndex=1;
+							vm.postInfo.PageIndex=0;
 							home.getBizQuery(vm.postInfo,function(data){
 								if(data.biz_Main){
 									vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
 									pullObj.endPullDownToRefresh(true);
 									pullObj.refresh();
-									pullObj.endPullUpToRefresh(false);	
+									data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
 								}else{
+									data.itemCount=="0" ?  mui.toast('暂无相关数据')  : 	mui.toast(data.message);																									
 									pullObj.endPullDownToRefresh(true);
+									pullObj.endPullUpToRefresh(true)
 								}																							
 							})				
 						}
@@ -168,7 +161,7 @@
 			//监听左右滑动事件
 			mui('.mui-slider')[0].addEventListener('slide',function(e){
 				let index=event.detail.slideNumber;
-				postInfo.SqlSearch="";
+				vm.postInfo.SqlSearch="";
 					vm.activeIndex=index;
 					if(index==0){
 						vm.postInfo.MobileSubmit="";
@@ -180,9 +173,20 @@
 				var pullRefreshView = mui('.mui-scroll')[index];				
 					mui(pullRefreshView).pullToRefresh().pullDownLoading();		          
 			});
+			//获取原始窗口的高度
+			var originalHeight=document.documentElement.clientHeight || document.body.clientHeight;			
+			window.onresize=function(){			
+					//软键盘弹起与隐藏  都会引起窗口的高度发生变化
+					var  resizeHeight=document.documentElement.clientHeight || document.body.clientHeight;		
+					if(resizeHeight*1<originalHeight*1){ //resizeHeight<originalHeight证明窗口被挤压了		
+							plus.webview.currentWebview().setStyle({  height:originalHeight });	
+					}
+			}
 			apptools.iosBlur();
 			//获取第一组数据
-			tool.getBizQuery();
+			setTimeout(function(){
+				mui(mui('.mui-scroll')[0]).pullToRefresh().pullDownLoading();	
+			},500)	
 		</script>
 	</body>
 

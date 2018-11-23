@@ -1,0 +1,19 @@
+.item {
+	height: 1rem;
+	margin: .2rem;
+	background-color: #FF8C00;
+	box-shadow: 0 0 5px #EFEFF4;
+	border-radius: .15rem;
+	padding: 0 .2rem;
+	color: #FFFFFF;
+}
+
+.item img {
+	width: .5rem;
+	margin-right: .15rem;
+}
+
+.item .desc {
+	color: #AAAAAA;
+	font-size: .25rem;
+}

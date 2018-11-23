@@ -487,7 +487,7 @@ var webtool = {
 			extras:data,			
 			show:{
 				aniShow:"pop-in",
-				duration:300
+				duration:200
 			},
 			waiting:{
 				title:'加载中...',

@@ -65,6 +65,10 @@
 	padding: .2rem .3rem;
 }
 
+.card .line{
+	line-height: .35rem;
+}
+
 .list {
 	position: relative;
 	top: -.65rem;

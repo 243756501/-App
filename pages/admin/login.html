@@ -37,18 +37,42 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../api/admin/admin.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/httptool.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/babel" charset="UTF-8">
+			mui.init();		
+			var _mainPage=null;
+      mui.plusReady(function(){
+				_mainPage = mui.preload({
+					url: '../root/index.html',
+					id: '../root/index.html',
+					styles: {
+						"render": "always",
+						"popGesture": "hide",
+						"bounce": "vertical",
+						"bounceBackground": "#efeff4",
+						"titleNView":  { //详情页原生导航配置
+							backgroundColor: '#f7f7f7', //导航栏背景色
+							titleText: '', //导航栏标题
+							titleColor: '#000000', //文字颜色
+							type: 'transparent', //透明渐变样							
+							splitLine: { //底部分割线
+								color: '#cccccc'
+							} 
+						}
+					}
+				});
+			})
+			
 			var vm=new Vue({
 				el:"#app",
 				data:{
 					userInfo:{
 						"LoginName":"",
-						"Password":""
+						"Password":"",
+						"DeviceID":""
 					}
 				},		
 				methods:{
@@ -58,23 +82,28 @@
 							return;
 						}
 					  let loading=plus.nativeUI.showWaiting();
+						this.userInfo.DeviceID=plus.device.vendor+";"+plus.device.model;
 						admin.userLogin(this.userInfo,function(data){
-							apptools.setUserInfo(data);
-							mui.toast('登录成功');
 							loading.close();
-							let allActivity=plus.webview.all();
-							for(let i in allActivity) {
-								mui.fire(allActivity[i], 'userChange', {
-									data: data
-								});
-							}
-							webtool.openWindow('../root/index',{},true);
+							if(data.status=="1" && data.UserID !== ""){
+								apptools.setUserInfo(data);
+								mui.toast('登录成功');								
+								let allActivity=plus.webview.all();
+								for(let i in allActivity) {
+									mui.fire(allActivity[i], 'userChange', {
+										data: data
+									});
+								}
+								_mainPage.show('pop-in',300);		
+							}else{
+								mui.toast(data.message);
+							}						
 						})
 						
 					}
 				},
 			});
-			mui.init();		
+		
 			//获取原始窗口的高度
 			var originalHeight=document.documentElement.clientHeight || document.body.clientHeight;			
 			window.onresize=function(){			
@@ -90,3 +119,4 @@
 	</body>
 
 </html>
+

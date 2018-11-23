@@ -18,7 +18,7 @@
 				<h1 class="mui-title">现场采样记录</h1>
 				<button class="mui-btn" @tap="submitClick()">提交记录</button>
 			</header>
-			<div class="mui-scroll-wrapper base-content">
+			<div class="mui-scroll-wrapper base-content" v-if="load">
 				<div class="mui-scroll">
 					<div class="main base-bg-white">
 						<div class="line base-flex-center base-border-bottom desc">
@@ -30,7 +30,7 @@
 						</div>
 						<div class="line base-flex-between">
 							<div>采样地址</div>
-							<input type="text" name="" id="" placeholder="请选择采样地址" readonly v-model="postInfo.SamplingPlace1" />
+							<input type="text" name="" id="" placeholder="请选择采样地址"  v-model="postInfo.SamplingPlace1" />
 						</div>						
 						<div class="line base-flex-between">
 							<div>采样前流量(L/min)</div>
@@ -39,10 +39,6 @@
 						<div class="line base-flex-between">
 							<div>采样后流量(L/min)</div>
 							<input type="number" name="" id="" placeholder="请输入采样后流量" v-model="postInfo.SamAftFlow" />
-						</div>
-						<div class="line base-flex-between">
-							<div>采样流量(L/min)</div>
-							<input type="number" name="" id="" placeholder="请输入采样流量" v-model="postInfo.F_TakeFlow" />
 						</div>	
 						<div class="line base-flex-between">
 							<div>采样仪器</div>
@@ -92,27 +88,64 @@
 		<script src="../../api/home/home.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/babel" charset="UTF-8">
 			mui.init();		
+			var loading;
 			mui.plusReady(function(){
+				loading=apptools.loading();
 				var wb=plus.webview.currentWebview();
 				home.getBizQueryDetail({ 'BizID' : wb.data },function(data){
-					vm.postInfo=data;						
+					vm.postInfo=data;			
+				    console.log(JSON.stringify(data));
+					vm.load=true;
+					loading.close();
 				})
 			});
 			var vm=new Vue({
 				el:"#app",
 				data:{
 					postInfo:{},
-					popData:[]
+					popData:[],
+					load:false
 				},		
 				created:function(){
 					
 				},
 				methods:{
 					submitClick:function(){
-						mui.confirm("是否提交该采样记录","操作提示",["取消","确定"],function(e){
+						mui.confirm("是否提交该采样记录","操作提示",["取消","确定"],(e)=>{
 							if(e.index==1){
-								mui.toast('提交成功');
-								plus.webview.currentWebview().close();
+								if(!this.postInfo.SamplingTime || !this.postInfo.SamplingPlace1 || !this.postInfo.SamBefFlow || !this.postInfo.SamAftFlow  || !this.postInfo.Equs){
+									mui.toast('业务信息填写不完整,请检查');
+									return;
+								}
+								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].Area || !this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].Area){
+									mui.toast('室内面积不能为空');
+									return;
+								}
+								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].Humidity || !this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].Humidity){
+									mui.toast('湿度不能为空');
+									return;
+								}
+								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].Temperature || !this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].Temperature){
+									mui.toast('温度不能为空');
+									return;
+								}
+								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].AtmPressure || !this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].AtmPressure){
+									mui.toast('大气压不能为空');
+									return;
+								}
+								//处理XML转数组的遗留下的问题,null
+								let array=this.postInfo.biz_SampleItemList.biz_SampleItem.concat();
+								for(let i in array){
+									if(!array[i]){
+										this.postInfo.biz_SampleItemList.biz_SampleItem.splice(i,1);
+									}
+								}
+								home.submitScene(this.postInfo,(res)=>{
+									if(res.status=="1"){
+										mui.toast('提交成功');
+										plus.webview.currentWebview().close();
+									}									
+								})								
 							}
 						})
 					},
@@ -141,7 +174,11 @@
 						
 					},
 					sampleItemClick:function(type){
-						webtool.openWindow('home-scene-write',{data:this.postInfo.biz_SampleItemList.biz_SampleItem});
+						if(!this.postInfo.biz_SampleItemList){
+							this.postInfo.biz_SampleItemList={};
+							this.postInfo.biz_SampleItemList.biz_SampleItem=[]
+						}
+						webtool.openWindow('home-scene-write',{data:this.postInfo.biz_SampleItemList.biz_SampleItem,bizID:this.postInfo.BizID,TestOrgDeptID:this.postInfo.TestOrgDeptID,SampleID:this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].SampleID});
 					}
 				},
 				computed:{
@@ -156,8 +193,12 @@
 			});
 			
 			vm.$nextTick(function(){				
-               	mui('.mui-scroll-wrapper').scroll();				
+               	mui('.mui-scroll-wrapper').scroll();	
 			})
+			window.addEventListener('refresh-item',function(e){
+				console.log(JSON.stringify(e.detail.data))
+				vm.postInfo.biz_SampleItemList.biz_SampleItem=e.detail.data;
+			});
 			apptools.iosBlur();				
 			webtool.backQuit();
 		</script>

@@ -23,60 +23,64 @@
 					<div class="mui-scroll">
 						<div class="main base-bg-white">
 							<ul class="mui-table-view">
-								<li class="mui-table-view-cell mui-collapse" v-for="(item,index) in postInfo" v-if="item.SampleItemID !== null">
-									<a class="mui-navigate-right" href="#">{{item.ItemName}} ( {{item.Method}} )</a>
-									<div class="base-flex-between base-border-bottom">
+								<li class="mui-table-view-cell base-bg-white mui-collapse" v-for="(item,index) in postInfo" v-if="item !== null">
+									<a class="mui-navigate-right" href="#">{{item.ItemName}}</a>
+									<div class="base-flex-between base-border-bottom deline">
 										<div></div>
-										<button class="mui-btn mui-btn-danger">删除</button>
+										<button class="mui-btn mui-btn-danger" @tap.stop="deleteItem(index,item.SampleItemID)">删除</button>
 									</div>
 									<div class="mui-collapse-content">
-										<div class="type" v-for="(item2,index2) in item.biz_SampleItemRecordList.biz_SampleItemRecord">
+										<div class="line base-flex-between" @tap="chooseQuickTest(index)" v-if="item.ItemName=='甲醛'">
+											<div>快速检测</div>
+											<div>{{item.QuickTestFlag==0 ? "否" : "是"}}</div>
+										</div>
+										<div class="type" v-for="(item2,index2) in item.biz_SampleItemRecordList.biz_SampleItemRecord">											
 											<div class="line base-flex-center">
 												{{item2.Type==0 ? '室内样品项目' : '室外样品项目'}}
 											</div>
 											<div class="line base-flex-between">
 												<div>采样流量</div>
-												<input type="text" name="" id="" placeholder="请输入采样流量" v-model="item2.SamFlow"/>
+												<input type="text" name="" id="" placeholder="请输入采样流量" v-model="item2.SamFlow" />
 											</div>
 											<div class="line base-flex-between">
 												<div>采样体积</div>
-												<input type="text" name="" id="" placeholder="请输入采样体积" v-model="item2.SamVolume"/>
+												<input type="text" name="" id="" placeholder="请输入采样体积" v-model="item2.SamVolume" />
 											</div>
 											<!-- 分光光度法-氨、甲醛  -->
-											<div v-if="item.ItemName=='氨' || item.ItemName=='甲醛'">
+											<div v-if="item.ItemName=='氨' || (item.ItemName=='甲醛' && item.QuickTestFlag==0)">
 												<div class="line base-flex-between">
 													<div>样品溶液的吸光度A</div>
-													<input type="text" name="" id="" placeholder="请输入样品溶液的吸光度A" v-model="item2.AbsSamSolution"/>
+													<input type="text" name="" id="" placeholder="请输入样品溶液的吸光度A" v-model="item2.AbsSamSolution" />
 												</div>
 												<div class="line base-flex-between">
 													<div>空白溶液的吸光度A₀</div>
-													<input type="text" name="" id="" placeholder="请输入空白溶液的吸光度A₀" v-model="item2.AbsBlaSolution"/>
+													<input type="text" name="" id="" placeholder="请输入空白溶液的吸光度A₀" v-model="item2.AbsBlaSolution" />
 												</div>
 												<div class="line base-flex-between">
 													<div>稀释因子f</div>
-													<input type="text" name="" id="" placeholder="请输入稀释因子f" v-model="item2.DilFactor"/>
+													<input type="text" name="" id="" placeholder="请输入稀释因子f" v-model="item2.DilFactor" />
 												</div>
 												<div class="line base-flex-between">
 													<div>计算因子B</div>
-													<input type="text" name="" id="" placeholder="请输入计算因子B" v-if="item2.CalFactor"/>
-												</div>
+													<input type="text" name="" id="" placeholder="请输入计算因子B" v-model="item2.CalFactor" />
+												</div>												
 											</div>
 											<!-- 氡 -->
 											<div v-else-if="item.ItemName=='氡'">
 												<div class="line base-flex-between">
 													<div>氡浓度</div>
-													<input type="text" name="" id="" placeholder="请输入氡浓度" v-model="item2.Concentration"/>
+													<input type="text" name="" id="" placeholder="请输入氡浓度" v-model="item2.Concentration" />
 												</div>
 											</div>
 											<!-- 甲醛 气象色谱-苯、TVOC、甲苯、二甲苯 -->
 											<div v-else>
 												<div class="line base-flex-between">
 													<div>测得值</div>
-													<input type="text" name="" id="" placeholder="请输入测得值" v-model="item2.MeasuredValue"/>
+													<input type="text" name="" id="" placeholder="请输入测得值" v-model="item2.MeasuredValue" />
 												</div>
 											</div>
-										</div>										
-									</div>								   
+										</div>
+									</div>
 								</li>
 							</ul>
 						</div>
@@ -90,21 +94,110 @@
 		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/httptool.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../api/home/home.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/babel" charset="UTF-8">
 			mui.init();	
+			var load;
 			mui.plusReady(function(){
+				//load=apptools.loading();
 				var wb=plus.webview.currentWebview();
 				vm.postInfo=wb.data;
+				vm.bizID=wb.bizID;
+				vm.TestOrgDeptID=wb.TestOrgDeptID;
+				vm.sampleID=wb.SampleID;
 			})
 			var vm=new Vue({
 				el:"#app",
 				data:{
                     type:"",
 					postInfo:{},
+					abiTestItem:[],
+					bizID:"",
+					TestOrgDeptID:"",
+					sampleID:""
 				},				
 				methods:{
+					chooseQuickTest:function(index,index2){
+						let data=[{value:"0",text:"否"},{value:"1",text:"是"}];
+						let picker=new mui.PopPicker();
+						picker.setData(data);
+						picker.show((rs)=>{
+							this.postInfo[index].QuickTestFlag=rs[0].value;
+						})
+					},
 					addItemClick:function(){
-						
+						home.getTestItem({},(data)=>{						
+							if(data.abi_TestItem){
+								this.abiTestItem=data.abi_TestItem;
+								let picker=new mui.PopPicker();
+								let pData=[];
+								for(let i in data.abi_TestItem){
+									let item=null;
+									if(data.abi_TestItem[i].Method){
+										item={ value: i , text:data.abi_TestItem[i].ItemName+"("+data.abi_TestItem[i].Method+")" };
+									}else{
+										item={ value: i , text:data.abi_TestItem[i].ItemName };
+									}
+									
+									pData.push(item);
+								}
+								picker.setData(pData);
+								picker.show((rs)=>{
+									let choose=this.abiTestItem[rs[0].value];
+									if(this.postInfo.length>0){
+										for(let i in this.postInfo){
+											if(!this.postInfo[i]){
+												if(i == (this.postInfo.length-1)){
+													let load=apptools.loading();
+													home.createSampleItem({"BizID":this.bizID,"SampleID":this.sampleID,"TestItemID":choose.TestItemID,"TestOrgDeptID":this.TestOrgDeptID},(item)=>{
+														load.close();
+														if(item.status=="1"){		
+															this.postInfo.push(item);
+														}													
+													})		
+												}
+												continue;
+											}
+											if(this.postInfo[i].ItemName == choose.ItemName){
+												mui.toast('该项目已存在');
+												break;
+											}else{
+												if(i == (this.postInfo.length-1)){
+													let load=apptools.loading();
+													home.createSampleItem({"BizID":this.bizID,"SampleID":this.sampleID,"TestItemID":choose.TestItemID,"TestOrgDeptID":this.TestOrgDeptID},(item)=>{
+														load.close();
+														if(item.status=="1"){	
+															console.log(2)
+															this.postInfo.push(item);
+														}													
+													})											                                                 
+												}
+											}
+										}
+									}else{
+										let load=apptools.loading();
+										home.createSampleItem({"BizID":this.bizID,"SampleID":this.sampleID,"TestItemID":choose.TestItemID,"TestOrgDeptID":this.TestOrgDeptID},(item)=>{
+											load.close();
+											if(item.status=="1"){												
+												this.postInfo.push(item);
+											}													
+										})		
+									}																		
+								})
+							}
+						});
+					},
+				    deleteItem:function(index,SampleItemID){
+						mui.confirm("确认删除该采样项目","删除确认",["取消","确认"],(e)=>{
+							if(e.index==1){
+								let load=apptools.loading();
+								home.deleteSampleItem({"SampleItemID":SampleItemID},(data)=>{
+									load.close();
+									this.postInfo.splice(index,1);
+								})						
+							}
+						})
 					}
 				},
 				computed:{
@@ -115,9 +208,17 @@
                	mui('.mui-scroll-wrapper').scroll();	
 				
 			})
+			//重写返回键事件
+			mui.back=function(){
+				var splitWb=plus.webview.getWebviewById('home-scene-split');
+				mui.fire(splitWb,'refresh-item',{
+					data: vm.postInfo
+				});
+				plus.webview.currentWebview().close();
+			}
 			
 			apptools.iosBlur();				
-			webtool.backQuit();
+			
 		</script>
 	</body>
 

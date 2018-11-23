@@ -18,13 +18,8 @@ var ajaxRequest=function(){
 			success: function(data) {
 				//服务器返回响应，根据响应结果，分析是否登录成功；
 				console.log(data);
-				var data2=JSON.parse(data);
-				if(data2.status==1){					
-					callback(data2);
-				}else{
-					mui.toast(data2.message);
-				}
-				
+				var data2=JSON.parse(data);								
+			    callback(data2);								
 			},
 			error: function(xhr, type, errorThrown) {
 				//异常处理；

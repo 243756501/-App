@@ -80,3 +80,6 @@ input:-ms-input-placeholder {
 	border-radius: .05rem;
 	padding: .1rem;
 }
+textarea{
+	font-size: .2rem !important;
+}

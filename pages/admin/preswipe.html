@@ -8,7 +8,7 @@
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
 		<style>
-            img{
+			img{
 				height: 100%;			
 			}
 			button{
@@ -24,28 +24,55 @@
 	</head>
 
 	<body>
-        <div id="app"  class="mui-content">
-        	<div  class="mui-slider  mui-fullscreen">
-        	  <div class="mui-slider-group">        		
-        		<div v-for="(item,index) in swipeList"  class="mui-slider-item mui-fullscreen">
-        		  <img :src="item.url" >
-				         <button class="mui-btn" v-if="index==(swipeListLength-1)" @tap="goLoginClick()">点击进入</button>
-        		</div>       		
-        	  </div>
-        	</div>
-        </div>
+		<div id="app" class="mui-content">
+			<div class="mui-slider  mui-fullscreen">
+				<div class="mui-slider-group">
+					<div v-for="(item,index) in swipeList" class="mui-slider-item mui-fullscreen">
+						<img :src="item.url">
+						<button class="mui-btn" v-if="index==(swipeListLength-1)" @tap="goLoginClick()">点击进入</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<script src="../../js/mui.js"></script>
 		<script src="../../js/lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/lib/browser.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../config.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/babel" charset="UTF-8">		
+		<script type="text/babel" charset="UTF-8">
 			mui.init();	
+			var _mainPage=null;
+			mui.plusReady(function(){
+				console.log(JSON.stringify(plus.device));
+				_mainPage = mui.preload({
+					url: '../root/index.html',
+					id: '../root/index.html',
+					styles: {
+						"render": "always",
+						"popGesture": "hide",
+						"bounce": "vertical",
+						"bounceBackground": "#efeff4",
+						"titleNView":  { //详情页原生导航配置
+							backgroundColor: '#f7f7f7', //导航栏背景色
+							titleText: '', //导航栏标题
+							titleColor: '#000000', //文字颜色
+							type: 'transparent', //透明渐变样							
+							splitLine: { //底部分割线
+								color: '#cccccc'
+							} 
+						}
+					}
+				});
+				if(apptools.getUserInfo()){
+					setTimeout(function(){
+						_mainPage.show('pop-in',300);		
+					},1000)				
+				}		
+			})
 			var vm=new Vue({
 				el:"#app",
 				data:{
 					swipeList:[
-						{ url : "../../img/pic/001.png"},
 						{ url : "../../img/pic/003.png"},
 					]
 				},				
@@ -65,14 +92,8 @@
 				}
 			});
 			vm.$nextTick(function(){				
-         mui(".mui-slider").slider();		
+                mui(".mui-slider").slider();		
 			});
-			mui.plusReady(function(){
-				if(apptools.getUserInfo()){
-					webtool.openWindow('../root/index',{},true);
-				}				
-			})
-		
 			apptools.backQuit();
 		</script>
 	</body>

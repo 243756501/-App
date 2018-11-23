@@ -109,17 +109,7 @@
 				}				
 				wb.append(fragment);									
 			}
-		})
-		//处理软键盘弹起压缩页面问题
-	    var height = document.documentElement.clientHeight || document.body.clientHeight;
-		window.addEventListener('resize',function(){
-			var heightView = document.documentElement.clientHeight || document.body.clientHeight;
-			if(heightView < height) {
-				plus.webview.currentWebview().setStyle({
-					height: height
-				});
-			}
-		}) 
+		})		
 	</script>
 </body>
 

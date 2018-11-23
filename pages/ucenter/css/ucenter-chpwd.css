@@ -3,14 +3,16 @@
 	margin: 0 auto;
 	font-size: .25rem;
 	padding: .15rem .25rem;
-	margin-top: .85rem;
+	margin-top: 55px;
 	border-radius: .15rem;
 }
 
 .line {
 	margin: .15rem 0;
 }
-
+.line .desc{
+	margin-bottom: .15rem;
+}
 input {
 	margin-bottom: 0 !important;
 }
