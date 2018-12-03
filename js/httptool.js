@@ -24,7 +24,7 @@ var ajaxRequest=function(){
 			error: function(xhr, type, errorThrown) {
 				//异常处理；
 				mui.toast(type);
-				callback(type);
+				callback();
 			}
 		})
 	}

@@ -123,19 +123,21 @@
 						this.userInfo.DeviceID=plus.device.vendor+";"+plus.device.model;
 						admin.userLogin(this.userInfo,function(data){
 							loading.close();
-							if(data.status=="1" && data.UserID !== ""){
-								apptools.setUserInfo(data);
-								mui.toast('登录成功');			
-								let allActivity=plus.webview.all();
-								for(let i in allActivity) {
-									mui.fire(allActivity[i], 'userChange', {
-										data: data
-									});
-								}
-								_mainPage.show('pop-in',300);		
-							}else{
-								mui.toast(data.message);
-							}						
+							if(data){
+								if(data.status=="1" && data.UserID !== ""){
+									apptools.setUserInfo(data);
+									mui.toast('登录成功');			
+									let allActivity=plus.webview.all();
+									for(let i in allActivity) {
+										mui.fire(allActivity[i], 'userChange', {
+											data: data
+										});
+									}
+									_mainPage.show('pop-in',300);		
+								}else{
+									mui.toast(data.message);
+								}						
+							}					
 						})
 						
 					}

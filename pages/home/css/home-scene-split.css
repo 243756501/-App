@@ -83,3 +83,6 @@ input:-ms-input-placeholder {
 textarea{
 	font-size: .2rem !important;
 }
+.sign{
+	width: 100%;
+}

@@ -34,7 +34,7 @@
 						<div class="mui-scroll-wrapper">
 							<div :id="item.id" class="mui-scroll">
 								<ul class="mui-table-view mui-clearfix">
-									<li v-for="(item,index) in item.datalist" class="mui-table-view-cell base-border-bottom" @tap="busItemClick(item.BizID)">
+									<li v-for="(item,index) in item.datalist" class="mui-table-view-cell base-border-bottom" @tap="busItemClick(item.BizID,item.MobileSubmit)">
 										<div class="line base-flex-between">
 											<div class="base-flex-horizontal">
 												<div class="desc">客户单位:</div>
@@ -95,23 +95,23 @@
 					searchWords:"",
 					activeIndex:0,
 					postInfo:{
-						PageIndex:0,//当前页面数
+						PageIndex:1,//当前页面数
 						PageSize:10,//分页条数
 						SqlSearch:"",//检索条件
-						MobileSubmit:"",
+						MobileSubmit:0,
 					},
-					swipeList:[
-						{ id:1,title:"全部",linkhref:"item1mobile1",datalist:[] },
-						{ id:2,title:"未提交",linkhref:"item2mobile",datalist:[] },
+					swipeList:[						
+						{ id:2,title:"未提交",linkhref:"item2mobile",datalist:[] },						
 						{ id:3,title:"已提交",linkhref:"item3mobile",datalist:[] },
+						{ id:1,title:"全部",linkhref:"item1mobile1",datalist:[] },
 					],
 				},
 				methods:{
 					searchEvent:function(){
 						mui(mui('.mui-scroll')[0]).pullToRefresh().pullDownLoading();	
 					},
-					busItemClick:function(BizID){
-						webtool.openWindow('home-scene-split',{ data: BizID });
+					busItemClick:function(BizID,MobileSubmit){
+						webtool.openWindow('home-scene-split',{ data: BizID , submit: MobileSubmit});
 					}
 				}
 			})
@@ -127,13 +127,17 @@
 							var pullObj=this;
 							vm.postInfo.PageIndex++;
      						home.getBizQuery(vm.postInfo,function(data){
-								if(data.biz_Main){
-									vm.swipeList[vm.activeIndex].datalist=vm.swipeList[vm.activeIndex].datalist.concat(data.biz_Main);
-									data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
-								}else{
-									mui.toast(data.message);
-									pullObj.endPullUpToRefresh(true)
-								}																									
+									if(data){
+										if(data.biz_Main){
+											vm.swipeList[vm.activeIndex].datalist=vm.swipeList[vm.activeIndex].datalist.concat(data.biz_Main);
+											data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
+										}else{
+											mui.toast(data.message);
+											pullObj.endPullUpToRefresh(true)
+										}							
+									}else{
+										pullObj.endPullUpToRefresh(true)
+									}																								
 							})
 							
 						}
@@ -143,16 +147,21 @@
 							var pullObj=this;
 							vm.postInfo.PageIndex=0;
 							home.getBizQuery(vm.postInfo,function(data){
-								if(data.biz_Main){
-									vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
-									pullObj.endPullDownToRefresh(true);
-									pullObj.refresh();
-									data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
+								if(data){
+									if(data.biz_Main){
+										vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
+										pullObj.endPullDownToRefresh(true);
+										pullObj.refresh();
+										data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
+									}else{
+										data.itemCount=="0" ?  mui.toast('暂无相关数据')  : 	mui.toast(data.message);																									
+										pullObj.endPullDownToRefresh(true);
+										pullObj.endPullUpToRefresh(true)
+									}					
 								}else{
-									data.itemCount=="0" ?  mui.toast('暂无相关数据')  : 	mui.toast(data.message);																									
 									pullObj.endPullDownToRefresh(true);
 									pullObj.endPullUpToRefresh(true)
-								}																							
+								}																										
 							})				
 						}
 					}
@@ -164,11 +173,11 @@
 				vm.postInfo.SqlSearch="";
 					vm.activeIndex=index;
 					if(index==0){
-						vm.postInfo.MobileSubmit="";
+						vm.postInfo.MobileSubmit=0;			
 					}else if(index==1){
-						vm.postInfo.MobileSubmit=0;
-					}else{
 						vm.postInfo.MobileSubmit=1;
+					}else{
+						vm.postInfo.MobileSubmit="";						
 					}
 				var pullRefreshView = mui('.mui-scroll')[index];				
 					mui(pullRefreshView).pullToRefresh().pullDownLoading();		          
@@ -182,6 +191,9 @@
 							plus.webview.currentWebview().setStyle({  height:originalHeight });	
 					}
 			}
+			window.addEventListener('refresh-event',function(){
+				mui(mui('.mui-scroll')[0]).pullToRefresh().pullDownLoading();	
+			});
 			apptools.iosBlur();
 			//获取第一组数据
 			setTimeout(function(){
