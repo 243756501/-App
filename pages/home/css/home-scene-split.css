@@ -64,6 +64,7 @@ input:-ms-input-placeholder {
 
 .desc {
 	font-size: .25rem;
+	padding: 0 0 .2rem 0;
 }
 
 .main .mui-btn {

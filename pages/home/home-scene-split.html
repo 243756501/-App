@@ -26,28 +26,34 @@
 						</div>
 						<div class="line base-flex-between">
 							<div>采样时间</div>
-							<input type="text" name="" id="" placeholder="请选择采样时间" readonly v-model="postInfo.SamplingTime" />
+							<input type="text" name="" id="" placeholder="请选择采样时间"  readonly="readonly" v-model="postInfo.SamplingTime" @tap="chooseSamplingTime()"/>
 						</div>
 						<div class="line base-flex-between">
 							<div>采样地址</div>
-							<input type="text" name="" id="" placeholder="请选择采样地址"  v-model="postInfo.SamplingPlace1" />
-						</div>	
-						<div class="line base-flex-between">
-							<div>客户联系人</div>
-							<input type="text" name="" id="" placeholder="请选择客户联系人" v-model="postInfo.ContactName" />
+							<input type="text" name="" id="" placeholder="请选择采样地址" v-model="postInfo.SamplingPlace1" />
 						</div>
-						<div class="line base-flex-between">
-							<div>联系电话</div>
-							<input type="number" name="" id="" placeholder="请选择联系电话"  v-model="postInfo.ContactTelephone" />
-						</div>	
 						<div class="line base-flex-between">
 							<div>采样点位</div>
 							<input type="text" name="" id="" placeholder="请输入采样点位" v-model="postInfo.SamplingPoint" />
 						</div>
-						<div class="line base-flex-between" @tap="chooseTime()">
-							<div>采样房间关闭门窗时间</div>
-							<input type="text" name="" id="" placeholder="请输入采样房间关闭门窗时间" readonly="" v-model="postInfo.SamRomCloTime" />
-						</div>	
+						<div class="line base-flex-between" >
+							<div>采样房间关闭门窗时间(小时)</div>
+							<input type="text" name=""  placeholder="请输入采样房间关闭门窗时间"   v-model="postInfo.SamRomCloTime" />
+						</div>
+						<div class="line base-flex-center base-border-bottom desc">
+							客户签名
+						</div>
+						<div class="line base-flex-between">
+							<img :src="postInfo.CusSignature  ?  'data:image/png;base64,'+postInfo.CusSignature  : '../../img/pic/df_big.png'"
+							class="sign">
+						</div>
+						<div class="line base-flex-between" v-if="postInfo.MobileSubmit==0">
+							<div></div>
+							<button @tap="signClick()">签名</button>
+						</div>
+						<div class="line base-flex-center base-border-bottom desc">
+							仪器信息
+						</div>
 						<div class="line base-flex-between">
 							<div>采样前流量(L/min)</div>
 							<input type="number" name="" id="" placeholder="请输入采样前流量" v-model="postInfo.SamBefFlow" />
@@ -55,7 +61,7 @@
 						<div class="line base-flex-between">
 							<div>采样后流量(L/min)</div>
 							<input type="number" name="" id="" placeholder="请输入采样后流量" v-model="postInfo.SamAftFlow" />
-						</div>						
+						</div>
 						<div class="line base-flex-between">
 							<div>采样仪器</div>
 							<button @tap="chooseMac()">选择仪器</button>
@@ -63,19 +69,25 @@
 						<div class="line">
 							<textarea v-model="postInfo.Equs"></textarea>
 						</div>
-					</div>			
+					</div>
 					<div v-for="(item,index) in postInfo.biz_SampleRecordList.biz_SampleRecord" class="main base-bg-white">
 						<div class="line base-flex-center base-border-bottom desc">
-							{{ item.Type==0 ? '室内样品' : '室外样品' }}
+							{{ item.Type==0 ? '室外样品' : '室内样品' }}
 						</div>
-						<div class="line base-flex-between" v-if="item.Type==0">
-							<div>点位名称</div>
-							<input type="text" name="" id="" placeholder="请输入点位名称" v-model="item.PointName" />
-						</div>
-					    <div class="line base-flex-between">
-					    	<div>室内面积(㎡)</div>
-					    	<input type="number" name="" id="" placeholder="请输入室内面积" v-model="item.Area" />
-					    </div>
+						<div v-if="item.Type==1">
+							<div class="line base-flex-between">
+								<div>点位名称</div>
+								<input type="text" name="" id="" placeholder="请输入点位名称" v-model="item.PointName" />
+							</div>
+							<div class="line base-flex-between">
+								<div>室内面积(㎡)</div>
+								<button @tap="chooseInsideArea()">选择室内面积</button>
+							</div>
+							<div class="line base-flex-between">
+								<div></div>
+								<input type="text" name="" id="" placeholder="请输入室内面积" v-model="item.Area" />
+							</div>
+					 </div>
 						<div class="line base-flex-between">
 							<div>湿度(％)</div>
 							<input type="number" name="" id="" placeholder="请输入湿度" v-model="item.Humidity" />
@@ -90,21 +102,9 @@
 						</div>
 						<div class="line base-flex-between" v-if="item.Type==1">
 							<div></div>
-						    <button @tap="sampleItemClick(item.Type)">项目数据填写</button>							
+							<button @tap="sampleItemClick(item.Type)">项目数据填写</button>
 						</div>
 					</div>
-					<div class="main base-bg-white">
-						<div class="line base-flex-center base-border-bottom desc">
-							客户签名
-						</div>
-						<div class="line base-flex-between">
-							<img :src="postInfo.CusSignature  ?  'data:image/png;base64,'+postInfo.CusSignature  : '../../img/pic/df_big.png'" class="sign">
-						</div>
-						<div class="line base-flex-between" v-if="postInfo.MobileSubmit==0">
-							<div></div>
-							<button @tap="signClick()">签名</button>							
-						</div>
-					</div>			
 				</div>
 			</div>
 
@@ -134,6 +134,7 @@
 						//获取当前时间
 						if(!vm.postInfo.SamplingTime){
 						vm.postInfo.SamplingTime=apptools.fmtUnixTime((new Date().getTime())/1000);
+						vm.nowTime=apptools.fmtUnixTime((new Date().getTime())/1000);
 						}				
 						console.log(JSON.stringify(data));
 						vm.load=true;
@@ -146,23 +147,31 @@
 				data:{
 					postInfo:{},
 					popData:[],
-					load:false
+					load:false,
+					nowTime:"",
 				},		
 				created:function(){
 					
 				},
 				methods:{
+					chooseSamplingTime:function(){
+					   	let option=JSON.parse('{"value":"2015-10-10 10:10","beginYear":"2018","endYear":2020}');
+					   	let picker=new mui.DtPicker(option);
+					   	picker.show((rs)=>{
+					   		this.postInfo.SamplingTime=rs.text;
+					   	})	
+					},
 					signClick:function(){
 						webtool.openWindow('home-scene-sign');
 					},
 					submitClick:function(){
 						mui.confirm("是否提交该采样记录","操作提示",["取消","确定"],(e)=>{
 							if(e.index==1){
-								if(!this.postInfo.ContactName || !this.postInfo.ContactTelephone || !this.postInfo.SamplingTime || !this.postInfo.SamplingPlace1 || !this.postInfo.SamBefFlow || !this.postInfo.SamAftFlow  || !this.postInfo.Equs){
+								if(!this.postInfo.SamplingTime || !this.postInfo.SamplingPlace1 || !this.postInfo.SamBefFlow || !this.postInfo.SamAftFlow  || !this.postInfo.Equs){
 									mui.toast('业务信息填写不完整,请检查');
 									return;
 								}
-								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].Area || !this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].Area){
+								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].Area){
 									mui.toast('室内面积不能为空');
 									return;
 								}
@@ -178,7 +187,7 @@
 									mui.toast('大气压不能为空');
 									return;
 								}
-								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[0].PointName){
+								if(!this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].PointName){
 									mui.toast('点位名称不能为空');
 									return;
 								}
@@ -232,6 +241,20 @@
 							});
 						})
 						
+					},
+					chooseInsideArea:function(){
+						let souceData=[
+							{text:"<50",value:"<50"},
+							{text:"50-100",value:"50-100"},
+							{text:"100-500",value:"100-500"},
+							{text:"500-1000",value:"500-1000"},
+							{text:"1000-3000",value:"1000-3000"}
+						]
+						let popPicker=new mui.PopPicker();
+						popPicker.setData(souceData);
+						popPicker.show((rs)=>{
+							this.postInfo.biz_SampleRecordList.biz_SampleRecord[1].Area = rs[0].text;
+						});
 					},
 					sampleItemClick:function(type){
 						if(!this.postInfo.biz_SampleItemList){

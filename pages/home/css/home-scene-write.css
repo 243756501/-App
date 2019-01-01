@@ -53,3 +53,7 @@ input:-ms-input-placeholder {
 .deline{
 	padding: .15rem 0;
 }
+textarea{
+	font-size: .18rem;
+	margin-top: .15rem;
+}

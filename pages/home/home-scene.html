@@ -47,14 +47,24 @@
 												<div class="desc">委托单号:</div>
 												<div>{{item.EntrustNo}}</div>
 											</div>
-
+                       
 										</div>
 										<div class="line base-flex-between">
-											
 											<div class="base-flex-horizontal">
 												<div class="desc">检测编号:</div>
 												<div>{{item.ReportNo}}</div>
 											</div>
+										
+										</div>
+										<div class="line base-flex-between">
+											<div class="base-flex-horizontal">
+												<div class="desc">联&nbsp;&nbsp;系&nbsp;&nbsp;人:</div>
+												<div>{{item.ContactName}}</div>
+											</div>
+										  <div class="base-flex-horizontal" @tap.stop="callEvent(item.ContactTelephone)">
+										  	<div class="desc">电话信息:</div>
+										  	<div class="tel">{{item.ContactTelephone}}</div>
+										  </div>									  
 										</div>
 										<div class="line base-flex-between">
 											<div class="base-flex-horizontal">
@@ -112,6 +122,18 @@
 					},
 					busItemClick:function(BizID,MobileSubmit){
 						webtool.openWindow('home-scene-split',{ data: BizID , submit: MobileSubmit});
+					},
+					callEvent:function(telNum){
+						if(!telNum){
+							mui.toast('电话号码不存在!');
+							return;
+						}else{
+							mui.confirm("是否拨打"+telNum+"?","提示",['拨打','取消'],function(e){
+								if(e.index==0){
+									plus.device.dial(telNum,false);
+								}
+							})
+						}
 					}
 				}
 			})
@@ -151,11 +173,11 @@
 									if(data.biz_Main){
 										vm.swipeList[vm.activeIndex].datalist=data.biz_Main;	
 										pullObj.endPullDownToRefresh(true);
-										pullObj.refresh();
+										pullObj.refresh(true);
 										data.biz_Main.length<10 ? pullObj.endPullUpToRefresh(true) :  pullObj.endPullUpToRefresh(false);
 									}else{
 										data.itemCount=="0" ?  mui.toast('暂无相关数据')  : 	mui.toast(data.message);																									
-										pullObj.endPullDownToRefresh(true);
+										pullObj.endPullDownToRefresh(true);										
 										pullObj.endPullUpToRefresh(true)
 									}					
 								}else{
@@ -179,8 +201,10 @@
 					}else{
 						vm.postInfo.MobileSubmit="";						
 					}
-				var pullRefreshView = mui('.mui-scroll')[index];				
-					mui(pullRefreshView).pullToRefresh().pullDownLoading();		          
+					if(vm.swipeList[index].datalist.length==0){
+						var pullRefreshView = mui('.mui-scroll')[index];				
+							mui(pullRefreshView).pullToRefresh().pullDownLoading();		
+					}          
 			});
 			//获取原始窗口的高度
 			var originalHeight=document.documentElement.clientHeight || document.body.clientHeight;			

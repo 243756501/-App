@@ -199,7 +199,7 @@
                         "spotlight" : "unpackage/res/icons/40x40.png",
                         "spotlight@2x" : "unpackage/res/icons/80x80.png"
                     },
-                    "appstore" : "F:/zhuchenxi/设计图及图片资源/小糸/改@2x.png"
+                    "appstore" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/改@2x.png"
                 },
                 "android" : {
                     "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/
@@ -214,11 +214,13 @@
                 "ios" : {
                     "iphone" : {
                         "default" : "", /*iPhone3启动图片选，分辨率：320x480*/
-                        "retina35" : "", /*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
-                        "retina40" : "", /*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
-                        "retina47" : "", /*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
-                        "retina55" : "", /*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
-                        "retina55l" : "" /*5.5 英寸设备(iPhone6 Plus)横屏启动图片，分辨率：2208x1242*/
+                        "retina35" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/640x1136.png", /*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
+                        "retina40" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/640x1136.png", /*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
+                        "retina47" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/750x1334.png", /*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
+                        "retina55" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/1125x2436.png", /*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
+                        "retina55l" : "", /*5.5 英寸设备(iPhone6 Plus)横屏启动图片，分辨率：2208x1242*/
+                        "retina47l" : "",
+                        "iphonex" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/1125x2436.png"
                     },
                     "ipad" : {
                         "portrait" : "", /*iPad竖屏启动图片，分辨率：768x1004*/
@@ -234,9 +236,9 @@
                 "android" : {
                     "mdpi" : "", /*普通屏启动图片，分辨率：240x282*/
                     "ldpi" : "", /*大屏启动图片，分辨率：320x442*/
-                    "hdpi" : "F:/zhuchenxi/设计图及图片资源/小糸/启动图/480x800.png", /*高分屏启动图片，分辨率：480x762*/
-                    "xhdpi" : "F:/zhuchenxi/设计图及图片资源/小糸/启动图/750x1334.png", /*720P高分屏启动图片，分辨率：720x1242*/
-                    "xxhdpi" : "F:/zhuchenxi/设计图及图片资源/小糸/启动图/1080x1920.png" /*1080P高分屏启动图片，分辨率：1080x1882*/
+                    "hdpi" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/480x800.png", /*高分屏启动图片，分辨率：480x762*/
+                    "xhdpi" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/750x1334.png", /*720P高分屏启动图片，分辨率：720x1242*/
+                    "xxhdpi" : "/Users/zhuchenxi/Desktop/设计图及图片资源/小糸/启动图/1080x1920.png" /*1080P高分屏启动图片，分辨率：1080x1882*/
                 }
             },
             "plugins" : {

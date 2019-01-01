@@ -347,7 +347,7 @@ var apptools = {
 		if(second < 10) {
 			second = "0" + second;
 		}
-		return Year + "." + Month + "." + Day + "  " + hour + ":" + minutes + ":" + second;
+		return Year + "-" + Month + "-" + Day + "  " + hour + ":" + minutes + ":" + second;
 	},
 
 	/**

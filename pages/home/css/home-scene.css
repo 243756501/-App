@@ -31,6 +31,10 @@
 	color: #AAAAAA;
 	margin-right: .1rem;
 }
+.line .tel{
+	color: #179ffe;
+	text-decoration: underline;
+}
 
 .line .status {
 	color: #007AFF;

@@ -34,18 +34,27 @@
 											<div>快速检测</div>
 											<div>{{item.QuickTestFlag==0 ? "否" : "是"}}</div>
 										</div>
+										<div  v-if="item.ItemName=='甲醛' && item.QuickTestFlag==1">
+											<div class="line base-flex-between">
+												<div>甲醛测试仪编号</div>
+												<button @tap="chooseJQMac(index)">选择仪器编号</button>
+											</div>
+											<div class="line base-flex-between">
+												<textarea v-model="item.Equs"></textarea>
+											</div>
+										</div>
 										<div class="type" v-for="(item2,index2) in item.biz_SampleItemRecordList.biz_SampleItemRecord">
-											<div v-if="(item.ItemName == '氡' && item2.Type=='1')"></div>
+											<div v-if="(item.ItemName == '氡' && item2.Type=='0')"></div>
 											<div v-else>
 												<div class="line base-flex-center">
-													{{item2.Type==0 ? '室内样品项目' : '室外样品项目'}}
+													{{item2.Type==0 ? '室外样品项目' : '室内样品项目'}}
 												</div>
-												<div class="line base-flex-between" v-if="item.ItemName !== '氡' || (item.ItemName=='甲醛' && item.QuickTestFlag==0)">
-													<div>采样流量</div>
+												<div class="line base-flex-between" v-if="!(item.ItemName == '氡' || (item.ItemName=='甲醛' && item.QuickTestFlag==1))">
+													<div>采样流量(L)</div>
 													<input type="number" name="" id="" placeholder="请输入采样流量" v-model="item2.SamFlow" />
 												</div>
-												<div class="line base-flex-between" v-if="item.ItemName !== '氡' || (item.ItemName=='甲醛' && item.QuickTestFlag==0)">
-													<div>采样体积</div>
+												<div class="line base-flex-between" v-if="!(item.ItemName == '氡' || (item.ItemName=='甲醛' && item.QuickTestFlag==1))">
+													<div>采样体积(L/min)</div>
 													<input type="number" name="" id="" placeholder="请输入采样体积" v-model="item2.SamVolume" />
 												</div>
 												<!-- 分光光度法-氨、甲醛  -->
@@ -110,6 +119,7 @@
 				vm.bizID=wb.bizID;
 				vm.TestOrgDeptID=wb.TestOrgDeptID;
 				vm.sampleID=wb.SampleID;
+				console.log(JSON.stringify(wb.data));
 			})
 			var vm=new Vue({
 				el:"#app",
@@ -122,6 +132,23 @@
 					sampleID:""
 				},				
 				methods:{
+					chooseJQMac:function(index){
+						home.getMacOptionItem({"OptionCode":"427151"},(res)=>{
+							let popData=[];
+							if(res.cfg_OptionItem && res.cfg_OptionItem.length>0){
+								for(var i in res.cfg_OptionItem){
+									let item={ text:res.cfg_OptionItem[i].OptionItemName ,value: res.cfg_OptionItem[i].OptionItemName };
+									popData.push(item);
+								}
+								let popPicker=new mui.PopPicker();
+								popPicker.setData(popData);
+								this.postInfo[index].Equs==null ? this.postInfo[index].Equs="" : "";
+								popPicker.show((rs)=>{
+									this.postInfo[index].Equs+=rs[0].value+";";
+								})
+							}
+						})
+					},
 					chooseQuickTest:function(index,index2){
 						let data=[{value:"0",text:"否"},{value:"1",text:"是"}];
 						let picker=new mui.PopPicker();
